@@ -1,0 +1,18 @@
+templateDir: openapi-generator/templates
+additionalProperties:
+  artifactId: customer-care-service
+  invokerPackage: "de.openknowledge.sample.customer.care"
+  apiPackage: "de.openknowledge.sample.customer.care.application"
+  modelPackage: "de.openknowledge.sample.customer.care.domain.address"
+  useMicroProfileOpenAPIAnnotations: true
+  useSwaggerAnnotations: false
+  useCommonsLang: true
+  generatePom: false
+  jackson: false
+files:
+  api.mustache:
+    templateType: API
+    destinationFilename: .java
+  model.mustache:
+    templateType: Model
+    destinationFilename: .java

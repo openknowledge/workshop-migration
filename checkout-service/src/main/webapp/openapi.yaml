@@ -1,0 +1,365 @@
+openapi: 3.1.0
+info:
+  title: Checkout Service
+  version: 1.0.0
+servers:
+- url: http://localhost:9081/checkout-service
+paths:
+  /offers:
+    post:
+      operationId: createOffer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Offer'
+        required: true
+      responses:
+        "201":
+          description: Offer is created
+          headers:
+            Location:
+              description: The url of the created offer
+              explode: false
+              schema:
+                pattern: "http\\://[a-z-]+[\\:[0-9]+]/orders/[0-9]+"
+                type: string
+              style: simple
+      x-content-type: application/json
+      x-accepts: application/json
+  /offers/{offerNumber}/payment:
+    get:
+      operationId: showPaymentPage
+      parameters:
+      - explode: false
+        in: path
+        name: offerNumber
+        required: true
+        schema:
+          $ref: '#/components/schemas/OfferNumber'
+        style: simple
+      responses:
+        "200":
+          content:
+            text/html:
+              schema:
+                type: string
+          description: The page to select a payment method
+      x-accepts: text/html
+  /offers/{offerNumber}/direct-billing-payment:
+    post:
+      operationId: setDirectBillingPayment
+      parameters:
+      - explode: false
+        in: path
+        name: offerNumber
+        required: true
+        schema:
+          $ref: '#/components/schemas/OfferNumber'
+        style: simple
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DirectBillingPayment'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DirectBillingPayment'
+        required: true
+      responses:
+        "200":
+          description: payment was set
+          headers:
+            Location:
+              description: The url of the next page in the process
+              explode: false
+              schema:
+                pattern: "http\\://[a-z-]+[\\:[0-9]+]/orders/[0-9]+"
+                type: string
+              style: simple
+      x-content-type: application/x-www-form-urlencoded
+      x-accepts: application/json
+  /offers/{offerNumber}/credit-card-payment:
+    post:
+      operationId: setCreditCardPayment
+      parameters:
+      - explode: false
+        in: path
+        name: offerNumber
+        required: true
+        schema:
+          $ref: '#/components/schemas/OfferNumber'
+        style: simple
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CreditCardPayment'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreditCardPayment'
+        required: true
+      responses:
+        "200":
+          description: payment was set
+          headers:
+            Location:
+              description: The url of the next page in the process
+              explode: false
+              schema:
+                pattern: "http\\://[a-z-]+[\\:[0-9]+]/orders/[0-9]+"
+                type: string
+              style: simple
+      x-content-type: application/x-www-form-urlencoded
+      x-accepts: application/json
+  /offers/{offerNumber}/email-payment:
+    post:
+      operationId: setEmailPayment
+      parameters:
+      - explode: false
+        in: path
+        name: offerNumber
+        required: true
+        schema:
+          $ref: '#/components/schemas/OfferNumber'
+        style: simple
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EmailPayment'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailPayment'
+        required: true
+      responses:
+        "200":
+          description: payment was set
+          headers:
+            Location:
+              description: The url of the next page in the process
+              explode: false
+              schema:
+                pattern: "http\\://[a-z-]+[\\:[0-9]+]/orders/[0-9]+"
+                type: string
+              style: simple
+      x-content-type: application/x-www-form-urlencoded
+      x-accepts: application/json
+  /offers/{offerNumber}/billing-address:
+    get:
+      operationId: showBillingAddressPage
+      parameters:
+      - explode: false
+        in: path
+        name: offerNumber
+        required: true
+        schema:
+          $ref: '#/components/schemas/OfferNumber'
+        style: simple
+      responses:
+        "200":
+          content:
+            text/html:
+              schema:
+                type: string
+          description: The page to select a billing address
+      x-accepts: text/html
+    post:
+      operationId: setBillingAddress
+      parameters:
+      - explode: false
+        in: path
+        name: offerNumber
+        required: true
+        schema:
+          $ref: '#/components/schemas/OfferNumber'
+        style: simple
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Address'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Address'
+        required: true
+      responses:
+        "200":
+          description: billing address was set
+          headers:
+            Location:
+              description: The url of the next page in the process
+              explode: false
+              schema:
+                pattern: "http\\://[a-z-]+[\\:[0-9]+]/orders/[0-9]+"
+                type: string
+              style: simple
+      x-content-type: application/x-www-form-urlencoded
+      x-accepts: application/json
+  /offers/{offerNumber}/delivery-address:
+    get:
+      operationId: showDeliveryAddressPage
+      parameters:
+      - explode: false
+        in: path
+        name: offerNumber
+        required: true
+        schema:
+          $ref: '#/components/schemas/OfferNumber'
+        style: simple
+      responses:
+        "200":
+          content:
+            text/html:
+              schema:
+                type: string
+          description: The page to select a delivery address
+      x-accepts: text/html
+    post:
+      operationId: setDeliveryAddress
+      parameters:
+      - explode: false
+        in: path
+        name: offerNumber
+        required: true
+        schema:
+          $ref: '#/components/schemas/OfferNumber'
+        style: simple
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Address'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Address'
+        required: true
+      responses:
+        "200":
+          description: delivery address was set
+          headers:
+            Location:
+              description: The url of the final page
+              explode: false
+              schema:
+                pattern: "http\\://[a-z-]+[\\:[0-9]+]/orders/[0-9]+"
+                type: string
+              style: simple
+      x-content-type: application/x-www-form-urlencoded
+      x-accepts: application/json
+components:
+  schemas:
+    OfferNumber:
+      pattern: \d+
+      type: string
+    Offer:
+      example:
+        customerNumber: "0815"
+        items:
+        - productNumber: 1234
+          quantity: 1
+        - productNumber: 1235
+          quantity: 1
+        totalPrice: 99.98
+      properties:
+        customerNumber:
+          pattern: \d+
+          type: string
+        items:
+          items:
+            $ref: '#/components/schemas/Item'
+          type: array
+      required:
+      - customerNumber
+      - items
+    Item:
+      properties:
+        productNumber:
+          pattern: \d+
+          type: string
+        quantity:
+          minimum: 1
+          type: integer
+      required:
+      - productNumber
+      - quantity
+    DirectBillingPayment:
+      example:
+        name: Max Mustermann
+        iban: DE1234567890123456
+        bic: DE345678
+      properties:
+        name:
+          minLength: 2
+          type: string
+        iban:
+          pattern: "[A-Z]{2}\\d{16,32}"
+          type: string
+        bic:
+          pattern: "[A-Z0-9]{8,11}"
+          type: string
+      required:
+      - bic
+      - iban
+      - name
+    CreditCardPayment:
+      example:
+        name: Max Mustermann
+        number: DE1234567890123456
+        validityMonth: 12
+        validityYear: 2050
+      properties:
+        name:
+          minLength: 2
+          type: string
+        number:
+          pattern: "\\d{16}"
+          type: string
+        expiryMonth:
+          maximum: 12
+          minimum: 1
+          type: integer
+        expiryYear:
+          minimum: 2023
+          type: integer
+        cvn:
+          pattern: "\\d{3}"
+          type: string
+      required:
+      - cvn
+      - expiryMonth
+      - expiryYear
+      - name
+      - number
+    EmailPayment:
+      example:
+        email: max.mustermann@openknowledge.de
+      properties:
+        email:
+          pattern: \w+@\w+\.\w+
+          type: string
+      required:
+      - email
+    Address:
+      example:
+        street: Poststr.
+        houseNumber: 1
+        zipCode: 26122
+        city: Oldenburg
+      properties:
+        street:
+          minLength: 2
+          type: string
+        houseNumber:
+          minLength: 1
+          type: string
+        zipCode:
+          pattern: "\\d{5}"
+          type: string
+        city:
+          minLength: 1
+          type: string
+      required:
+      - city
+      - street
+      - zipCode

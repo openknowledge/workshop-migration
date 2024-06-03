@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Offer</title>
+    <link rel="stylesheet" href="/offer.css">
+  </head>
+  <body>
+    <header th:replace="fragments/header"/>
+
+    <section>
+      <nav th:replace="fragments/nav"/>
+  
+      <article>
+        <h2>Zahlart</h2>
+        <p>
+          <details onclick="var open = this.open; Array.from(document.getElementsByTagName('details')).forEach(e => e.open = false);this.open = open">
+            <summary>SEPA-Mandat</summary>
+            <form th:action="${'/offers/' + offer.number.number() + '/direct-billing-payment'}" method="POST">
+              <label for="name">Kontoinhaber</label>
+              <input class="four-columns" type="text" id="name" name="name" />
+              <label for="iban">IBAN</label>
+              <input class="four-columns" type="text" id="iban" name="iban" />
+              <label for="bic">BIC</label>
+              <input class="three-columns" type="text" id="bic" name="bic" />
+              <input type="submit" value="Ausw&auml;hlen">
+            </form>
+          </details>
+        </p>
+        <p>
+          <details onclick="var open = this.open; Array.from(document.getElementsByTagName('details')).forEach(e => e.open = false);this.open = open">
+            <summary>Kreditkarte</summary>
+            <form th:action="${'/offers/' + offer.number.number() + '/credit-card-payment'}" method="POST">
+              <label for="name">Inhaber</label>
+              <input class="four-columns" type="text" id="name" name="name" />
+              <label for="number">Kreditkartennummer</label>
+              <input class="four-columns" type="text" id="number" name="number" />
+              <label for="expiryMonth">G&uuml;ltigkeit</label>
+              <input type="number" id="expiryMonth" name="expiryMonth" min="1" max="12" value="1" step="1"/>
+              <input class="large" type="number" id="expiryYear" name="expiryYear" min="2023" max="2035" value="2024" step="1"/>
+              <label for="cvn">Pr&uuml;fnummer</label>
+              <input type="text" id="cvn" name="cvn" />
+              <div class="four-columns"></div>
+              <input type="submit" value="Ausw&auml;hlen">
+            </form>
+          </details>
+        </p>
+        <p>
+          <details onclick="var open = this.open; Array.from(document.getElementsByTagName('details')).forEach(e => e.open = false);this.open = open">
+            <summary>Email-Bezahlung</summary>
+            <form th:action="${'/offers/' + offer.number.number() + '/email-payment'}" method="POST">
+              <label for="name">Email-Adresse</label>
+              <input class="three-columns" type="text" id="email" name="email" />
+              <input type="submit" value="Ausw&auml;hlen">
+            </form>
+          </details>
+        </p>
+      </article>
+      <aside></aside>
+    </section>
+  </body>
+</html>

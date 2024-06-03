@@ -1,0 +1,115 @@
+openapi: 3.1.0
+info:
+  title: Customer Care Service
+  version: 1.0.0
+servers:
+- url: http://localhost:8081/customer-care-service
+paths:
+  /customers/{customerNumber}/addresses:
+    get:
+      operationId: getAddresses
+      parameters:
+      - explode: false
+        in: path
+        name: customerNumber
+        required: true
+        schema:
+          $ref: '#/components/schemas/CustomerNumber'
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Address'
+                type: array
+          description: default response
+      x-accepts: application/json
+    post:
+      operationId: addAddress
+      parameters:
+      - explode: false
+        in: path
+        name: customerNumber
+        required: true
+        schema:
+          $ref: '#/components/schemas/CustomerNumber'
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Address'
+        required: true
+      responses:
+        "200":
+          description: default response
+      x-accepts: application/json
+      x-content-type: application/json
+  /customers/{customerNumber}/addresses/default-billing:
+    get:
+      operationId: getDefaultBillingAddress
+      parameters:
+      - explode: false
+        in: path
+        name: customerNumber
+        required: true
+        schema:
+          $ref: '#/components/schemas/CustomerNumber'
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Address'
+          description: default response
+      x-accepts: application/json
+  /customers/{customerNumber}/addresses/default-delivery:
+    get:
+      operationId: getDefaultDeliveryAddress
+      parameters:
+      - explode: false
+        in: path
+        name: customerNumber
+        required: true
+        schema:
+          $ref: '#/components/schemas/CustomerNumber'
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Address'
+          description: default response
+      x-accepts: application/json
+components:
+  schemas:
+    CustomerNumber:
+      pattern: \d+
+      type: string
+    Address:
+      example:
+        street: Poststr.
+        houseNumber: 1
+        zipCode: 26122
+        city: Oldenburg
+      properties:
+        street:
+          minLength: 2
+          type: string
+        houseNumber:
+          minLength: 1
+          type: string
+        zipCode:
+          pattern: "\\d{5}"
+          type: string
+        city:
+          minLength: 1
+          type: string
+      required:
+      - city
+      - street
+      - zipCode

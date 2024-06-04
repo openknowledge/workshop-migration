@@ -16,11 +16,8 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Build customer-care-service
-        run: mvn clean package -f customer-care-service/pom.xml
-
-      - name: Build checkout-service
-        run: mvn clean package -f checkout-service/pom.xml
+      - name: Build onlineshop
+        run: mvn clean package -f online-shop/pom.xml
 
       - name: Build with Docker
         run: docker compose build

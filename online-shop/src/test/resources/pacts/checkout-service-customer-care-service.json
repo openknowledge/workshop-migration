@@ -1,0 +1,137 @@
+{
+  "consumer": {
+    "name": "checkout-service"
+  },
+  "interactions": [
+    {
+      "description": "GET request to get all addresses",
+      "providerStates": [
+        {
+          "name": "Customer 0815"
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/customers/0815/addresses"
+      },
+      "response": {
+        "body": [
+          {
+            "city": "Oldenburg",
+            "houseNumber": "1",
+            "street": "Poststr.",
+            "zipCode": "26122"
+          },
+          {
+            "city": "Essen",
+            "houseNumber": "7",
+            "street": "II. Hagen",
+            "zipCode": "45127"
+          }
+        ],
+        "headers": {
+          "Content-Type": "application/json; charset=UTF-8"
+        },
+        "matchingRules": {
+          "header": {
+            "Content-Type": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "application/json(;\\s?charset=[\\w\\-]+)?"
+                }
+              ]
+            }
+          }
+        },
+        "status": 200
+      }
+    },
+    {
+      "description": "GET request to get default billing address",
+      "providerStates": [
+        {
+          "name": "Customer 0815"
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/customers/0815/addresses/default-billing"
+      },
+      "response": {
+        "body": {
+          "city": "Oldenburg",
+          "houseNumber": "1",
+          "street": "Poststr.",
+          "zipCode": "26122"
+        },
+        "headers": {
+          "Content-Type": "application/json; charset=UTF-8"
+        },
+        "matchingRules": {
+          "header": {
+            "Content-Type": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "application/json(;\\s?charset=[\\w\\-]+)?"
+                }
+              ]
+            }
+          }
+        },
+        "status": 200
+      }
+    },
+    {
+      "description": "GET request to get default delivery address",
+      "providerStates": [
+        {
+          "name": "Customer 0815"
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/customers/0815/addresses/default-delivery"
+      },
+      "response": {
+        "body": {
+          "city": "Essen",
+          "houseNumber": "7",
+          "street": "II. Hagen",
+          "zipCode": "45127"
+        },
+        "headers": {
+          "Content-Type": "application/json; charset=UTF-8"
+        },
+        "matchingRules": {
+          "header": {
+            "Content-Type": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "application/json(;\\s?charset=[\\w\\-]+)?"
+                }
+              ]
+            }
+          }
+        },
+        "status": 200
+      }
+    }
+  ],
+  "metadata": {
+    "pact-jvm": {
+      "version": "4.3.15"
+    },
+    "pactSpecification": {
+      "version": "3.0.0"
+    }
+  },
+  "provider": {
+    "name": "customer-care-service"
+  }
+}

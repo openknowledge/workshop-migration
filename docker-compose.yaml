@@ -1,27 +1,38 @@
-version: '3'
-
 services:
-  checkout-database:
+  credit-card-service:
+    image: wiremock/wiremock:3.3.1-1
+    ports:
+      - "4002:8080"
+    volumes:
+      - ./wiremock:/home/wiremock
+
+  online-shop-database:
     image: postgres:16.1
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_PASSWORD=Pa55w0rd
+      - POSTGRES_PASSWORD=P@55w0rd
 
-  checkout-service:
-    build: checkout-service/
+  online-shop-migration:
+    image: flyway/flyway:10.10
+    command: -url=jdbc:postgresql://online-shop-database:5432/postgres -user=postgres -password=P@55w0rd -connectRetries=60 migrate
+    volumes:
+      - ./online-shop/src/main/resources/db:/flyway/sql
+    depends_on:
+      - online-shop-database
+
+  online-shop:
+    build: online-shop/
     ports:
-      - "4001:8080"
+      - "4000:8080"
     environment:
-      - EXTERNAL_URL=http://localhost:4001
-      - CUSTOMER_CARE_SERVICE_URL=http://customer-care-service:8080
-      - CREDIT_CARD_SERVICE_URL=http://credit-card-service:8080
-      - ORDER_SERVICE_URL=http://order-service:8080
-      - JAKARTA_PERSISTENCE_JDBC_URL=jdbc:postgresql://checkout-database:5432/postgres
+      - EXTERNAL_URL=http://localhost:4000
+      - JAKARTA_PERSISTENCE_JDBC_URL=jdbc:postgresql://online-shop-database:5432/postgres
       - JAKARTA_PERSISTENCE_JDBC_USER=postgres
-      - JAKARTA_PERSISTENCE_JDBC_PASSWORD=Pa55w0rd
+      - JAKARTA_PERSISTENCE_JDBC_PASSWORD=P@55w0rd
 
-  customer-care-service:
-    build: customer-care-service/
+  adminer:
+    image: adminer:4.8.1-standalone
+    restart: always
     ports:
-      - "4003:8080"
+      - 8080:8080

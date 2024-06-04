@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Order</title>
+    <link rel="stylesheet" href="/onlineshop.css">
+  </head>
+  <body>
+    <header th:replace="fragments/header"/>
+
+    <section>
+      <nav th:replace="fragments/nav(image='/cash-register-2662911_640.png')"/>
+  
+      <article>
+        <h2>Zusammenfassung</h2>
+        <p>
+          <h3>Artikel</h3>
+          <table>
+            <tr th:each="item, iterator: ${summary.order.items()}">
+              <td th:text="${(iterator.index + 1) + '.'}">1.</td>
+              <td class="left" th:text="${iterator.index == 0} ? 'Domain Driven Design': 'Clean Code'"></td>
+              <td>
+                <input type="hidden" id="itemNumber" name="itemNumber" value="0816"/>
+                <input type="text" id="itemQuantity" name="itemQuantity" th:value="${item.quantity().quantity()}" readonly="true"/>
+              </td>
+              <td class="right">49,99 Euro</td>
+            </tr>
+          </table>
+        </p>
+        <div th:if="${summary.order.directBillingPayment}">
+          <p>
+            <h3>Zahlart</h3>
+            <table>
+              <tr>
+                <td>Kontoinhaber</td>
+                <td th:text="${summary.order.payment().name().name()}">
+              </tr>
+              <tr>
+                <td>IBAN</td>
+                <td th:text="${summary.order.payment().iban().number()}">
+              </tr>
+            </table>
+          </p>
+        </div>
+        <div th:if="${summary.order.creditCardPayment}">
+          <p>
+            <h3>Zahlart</h3>
+            <table>
+              <tr>
+                <td>Kreditkarteninhaber</td>
+                <td th:text="${summary.order.payment().name().name()}">
+              </tr>
+              <tr>
+                <td>Kreditkartennummer</td>
+                <td th:text="${summary.order.payment().number().number()}">
+              </tr>
+            </table>
+          </p>
+        </div>
+        <div th:if="${summary.order.emailPayment}">
+          <p>
+            <h3>Zahlart</h3>
+            <table>
+              <tr>
+                <td>Email-Adresse</td>
+                <td th:text="${summary.order.payment().email().address()}">
+              </tr>
+            </table>
+          </p>
+        </div>
+        <p>
+          <h3>Rechnungsadresse</h3>
+          <table>
+            <tr>
+              <td>Stra&szlig;e</td>
+              <td th:text="${summary.order.billingAddress().houseNumber() != null} ? ${summary.order.billingAddress().street().name() + ' ' + summary.order.billingAddress().houseNumber().number()} : ${summary.order.billingAddress().street().name()}">
+            </tr>
+            <tr>
+              <td>Stadt</td>
+              <td th:text="${summary.order.billingAddress().zipCode().code() + ' ' + summary.order.billingAddress().city().name()}">
+            </tr>
+          </table>
+        </p>
+        <p>
+          <h3>Lieferadresse</h3>
+          <table>
+            <tr>
+              <td>Stra&szlig;e</td>
+              <td th:text="${summary.order.deliveryAddress().houseNumber() != null} ? ${summary.order.deliveryAddress().street().name() + ' ' + summary.order.deliveryAddress().houseNumber().number()} : ${summary.order.deliveryAddress().street().name()}">
+            </tr>
+            <tr>
+              <td>Stadt</td>
+              <td th:text="${summary.order.deliveryAddress().zipCode().code() + ' ' + summary.order.deliveryAddress().city().name()}">
+            </tr>
+          </table>
+        </p>
+        <form th:action="${'/orders/'}" method="POST">
+          <input type="hidden" id="offerNumber" name="offerNumber" th:value="${offer.number.number()}" />
+          <input type="submit" value="Kostenpflichtig bestellen"></input>
+        </form>
+      </article>
+      <aside></aside>
+    </section>
+  </body>
+</html>

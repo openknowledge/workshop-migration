@@ -1,0 +1,14 @@
+create sequence SEQ_PAYMENT start with 1 increment by 50;
+create sequence SEQ_ORDER start with 1 increment by 50;
+create table TAB_CREDIT_CARD_PAYMENT (PAY_EXPIRY_MONTH integer, PAY_EXPIRY_YEAR integer, PAY_ID bigint not null, PAY_ORD_ID bigint unique, PAY_CARD_VERIFICATION_NUMBER varchar(255), PAY_NAME varchar(255), PAY_NUMBER varchar(255), primary key (PAY_ID));
+create table TAB_DIRECT_BILLING_PAYMENT (PAY_ID bigint not null, PAY_ORD_ID bigint unique, PAY_BIC varchar(255), PAY_IBAN varchar(255), PAY_NAME varchar(255), primary key (PAY_ID));
+create table TAB_EMAIL_PAYMENT (PAY_ID bigint not null, PAY_ORD_ID bigint unique, PAY_EMAIL_ADDRESS varchar(255), primary key (PAY_ID));
+create table TAB_ORDER (ORD_ID bigint not null, ORD_STATUS varchar(255) not null, ORD_PAY_ID bigint unique, ORD_BILLING_ADR_ID bigint, ORD_CUS_ID bigint, ORD_DELIVERY_ADR_ID bigint, ORD_ORDER_NUMBER varchar(255), primary key (ORD_ID));
+create table TAB_ORDER_ITEM (ORI_QUANTITY integer, ORI_ORD_ID bigint not null, ORI_PRODUCT_NUMBER varchar(255));
+alter table if exists TAB_ORDER add constraint FK_ORD_CUS_ID foreign key (ORD_CUS_ID) references TAB_CUSTOMER;
+alter table if exists TAB_ORDER add constraint FK_ORD_BILLING_ADR_ID foreign key (ORD_BILLING_ADR_ID) references TAB_ADDRESS;
+alter table if exists TAB_ORDER add constraint FK_ORD_DELIVERY_ADR_ID foreign key (ORD_BILLING_ADR_ID) references TAB_ADDRESS;
+alter table if exists TAB_CREDIT_CARD_PAYMENT add constraint FK_CC_PAY_ORD_ID foreign key (PAY_ORD_ID) references TAB_ORDER;
+alter table if exists TAB_DIRECT_BILLING_PAYMENT add constraint FK_DB_PAY_ORD_ID foreign key (PAY_ORD_ID) references TAB_ORDER;
+alter table if exists TAB_EMAIL_PAYMENT add constraint FK_EM_PAY_ORD_ID foreign key (PAY_ORD_ID) references TAB_ORDER;
+alter table if exists TAB_ORDER_ITEM add constraint FK_ORI_ORD_ID foreign key (ORI_ORD_ID) references TAB_ORDER;

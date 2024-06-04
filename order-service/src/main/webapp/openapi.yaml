@@ -1,0 +1,175 @@
+openapi: 3.1.0
+info:
+  title: Order Service
+  version: 1.0.0
+servers:
+- url: http://localhost:8082/order-service
+paths:
+  /orders:
+    post:
+      operationId: createOrder
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Order'
+        required: false
+      responses:
+        "201":
+          description: Orders is created and may be updated via put
+          headers:
+            Location:
+              description: The url of the created order
+              explode: false
+              schema:
+                pattern: "http\\://[a-z-]+[\\:[0-9]+]/orders/[0-9]+"
+                type: string
+              style: simple
+      x-content-type: application/json
+      x-accepts: application/json
+  /orders/{orderNumber}:
+    put:
+      operationId: updateOrder
+      parameters:
+      - explode: false
+        in: path
+        name: orderNumber
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Order'
+        required: false
+      responses:
+        "201":
+          description: Orders is created and may be updated via put
+          headers:
+            Location:
+              description: The url of the created order
+              explode: false
+              schema:
+                pattern: "http\\://[a-z-]+[\\:[0-9]+]/orders/[0-9]+"
+                type: string
+              style: simple
+      x-content-type: application/json
+      x-accepts: application/json
+components:
+  schemas:
+    Order:
+      example:
+        customerNumber: "0815"
+        items:
+        - productNumber: 1234
+          quantity: 1
+        - productNumber: 1235
+          quantity: 1
+        totalPrice: 99.98
+        payment:
+          email: max.mustermann@openknowledge.de
+      properties:
+        customerNumber:
+          pattern: \d+
+          type: string
+        items:
+          items:
+            $ref: '#/components/schemas/Item'
+          type: array
+      required:
+      - customerNumber
+      - deliveryAddress
+      - items
+    Item:
+      properties:
+        productNumber:
+          pattern: \d+
+          type: string
+        quantity:
+          minimum: 1
+          type: integer
+      required:
+      - productNumber
+      - quantity
+    DirectBillingPayment:
+      example:
+        name: Max Mustermann
+        iban: DE1234567890123456
+        bic: DE345678
+      properties:
+        name:
+          minLength: 2
+          type: string
+        iban:
+          pattern: "[A-Z]{2}\\d{16,32}"
+          type: string
+        bic:
+          pattern: "[A-Z0-9]{8,11}"
+          type: string
+      required:
+      - bic
+      - iban
+      - name
+    CreditCardPayment:
+      example:
+        name: Max Mustermann
+        number: DE1234567890123456
+        validityMonth: 12
+        validityYear: 2050
+      properties:
+        name:
+          minLength: 2
+          type: string
+        number:
+          pattern: "\\d{16}"
+          type: string
+        expiryMonth:
+          maximum: 12
+          minimum: 1
+          type: integer
+        expiryYear:
+          minimum: 2023
+          type: integer
+        cvn:
+          pattern: "\\d{3}"
+          type: string
+      required:
+      - cvn
+      - expiryMonth
+      - expiryYear
+      - name
+      - number
+    EmailPayment:
+      example:
+        email: max.mustermann@openknowledge.de
+      properties:
+        email:
+          pattern: \w+@\w+\.\w+
+          type: string
+      required:
+      - email
+    Address:
+      example:
+        street: Poststr.
+        houseNumber: 1
+        zipCode: 26122
+        city: Oldenburg
+      properties:
+        street:
+          minLength: 2
+          type: string
+        houseNumber:
+          minLength: 1
+          type: string
+        zipCode:
+          pattern: "\\d{5}"
+          type: string
+        city:
+          minLength: 1
+          type: string
+      required:
+      - city
+      - street
+      - zipCode

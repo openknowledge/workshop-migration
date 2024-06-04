@@ -1,0 +1,18 @@
+templateDir: openapi-generator/templates
+additionalProperties:
+  artifactId: order-service
+  invokerPackage: "de.openknowledge.sample.order"
+  apiPackage: "de.openknowledge.sample.order.application"
+  modelPackage: "de.openknowledge.sample.order.domain"
+  useMicroProfileOpenAPIAnnotations: true
+  useSwaggerAnnotations: false
+  useCommonsLang: true
+  generatePom: false
+  jackson: false
+files:
+  api.mustache:
+    templateType: API
+    destinationFilename: .java
+  model.mustache:
+    templateType: Model
+    destinationFilename: .java

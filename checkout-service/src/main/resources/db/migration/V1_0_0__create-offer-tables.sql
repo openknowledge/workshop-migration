@@ -1,0 +1,11 @@
+create sequence SEQ_PAYMENT start with 1 increment by 50;
+create sequence SEQ_OFFER start with 1 increment by 50;
+create table TAB_CREDIT_CARD_PAYMENT (PAY_EXPIRY_MONTH integer, PAY_EXPIRY_YEAR integer, PAY_ID bigint not null, PAY_OFF_ID bigint unique, PAY_CARD_VERIFICATION_NUMBER varchar(255), PAY_NAME varchar(255), PAY_NUMBER varchar(255), primary key (PAY_ID));
+create table TAB_DIRECT_BILLING_PAYMENT (PAY_ID bigint not null, PAY_OFF_ID bigint unique, PAY_BIC varchar(255), PAY_IBAN varchar(255), PAY_NAME varchar(255), primary key (PAY_ID));
+create table TAB_EMAIL_PAYMENT (PAY_ID bigint not null, PAY_OFF_ID bigint unique, PAY_EMAIL_ADDRESS varchar(255), primary key (PAY_ID));
+create table TAB_OFFER (OFF_ID bigint not null, payment_PAY_ID bigint unique, OFF_BILLING_ADDRESS_CITY varchar(255), OFF_BILLING_ADDRESS_HOUSE_NUMBER varchar(255), OFF_BILLING_ADDRESS_STREET varchar(255), OFF_BILLING_ADDRESS_ZIP_CODE varchar(255), OFF_CUSTOMER_NUMBER varchar(255), OFF_DELIVERY_ADDRESS_CITY varchar(255), OFF_DELIVERY_ADDRESS_HOUSE_NUMBER varchar(255), OFF_DELIVERY_ADDRESS_STREET varchar(255), OFF_DELIVERY_ADDRESS_ZIP_CODE varchar(255), OFF_OFFER_NUMBER varchar(255), primary key (OFF_ID));
+create table TAB_OFFER_ITEM (OFI_QUANTITY integer, OFI_OFF_ID bigint not null, OFI_PRODUCT_NUMBER varchar(255));
+alter table if exists TAB_CREDIT_CARD_PAYMENT add constraint FK_CC_PAY_OFF_ID foreign key (PAY_OFF_ID) references TAB_OFFER;
+alter table if exists TAB_DIRECT_BILLING_PAYMENT add constraint FK_DB_PAY_OFF_ID foreign key (PAY_OFF_ID) references TAB_OFFER;
+alter table if exists TAB_EMAIL_PAYMENT add constraint FK_EM_PAY_OFF_ID foreign key (PAY_OFF_ID) references TAB_OFFER;
+alter table if exists TAB_OFFER_ITEM add constraint FK_OFI_OFF_ID foreign key (OFI_OFF_ID) references TAB_OFFER;

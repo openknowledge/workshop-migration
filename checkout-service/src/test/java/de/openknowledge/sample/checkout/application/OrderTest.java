@@ -30,6 +30,7 @@ import javax.ws.rs.core.Response;
 import org.apache.meecrowave.Meecrowave;
 import org.apache.meecrowave.junit5.MeecrowaveConfig;
 import org.apache.meecrowave.testing.ConfigurationInject;
+import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -82,6 +83,15 @@ public class OrderTest {
         System.setProperty("jakarta.persistence.jdbc.url", postgresqlContainer.getJdbcUrl());
         System.setProperty("jakarta.persistence.jdbc.user", postgresqlContainer.getUsername());
         System.setProperty("jakarta.persistence.jdbc.password", postgresqlContainer.getPassword());
+        Flyway flyway = Flyway
+            .configure()
+            .dataSource(
+                postgresqlContainer.getJdbcUrl(),
+                postgresqlContainer.getUsername(),
+                postgresqlContainer.getPassword())
+            .cleanDisabled(false).load();
+        flyway.clean();
+        flyway.migrate();
     }
 
     @BeforeEach

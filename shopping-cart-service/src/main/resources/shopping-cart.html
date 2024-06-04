@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Shopping Cart</title>
+    <link rel="stylesheet" href="/shopping-cart.css">
+  </head>
+  <body>
+    <header>
+      <h1>Shopping Cart</h1>
+    </header>
+
+    <section>
+      <nav>
+        <img src="/shopping-venture-2614015_640.png"/>
+      </nav>
+  
+      <article>
+        <form action="/shopping-carts/0815/" method="POST">
+          <p>
+            <table>
+              <tr>
+                <td>1.</td>
+                <td class="left">Domain Driven Design</td>
+                <td>
+                  <input type="hidden" id="itemNumber" name="itemNumber" value="0816"/>
+                  <input type="number" id="itemQuantity" name="itemQuantity" min="1" max="100" value="1" step="1"/>
+                </td>
+                <td class="right">49,99 Euro</td>
+              </tr>
+              <tr>
+                <td>2.</td>
+                <td class="left">Clean Code</td>
+                <td>
+                  <input type="hidden" id="itemNumber" name="itemNumber" value="0817"/>
+                  <input type="number" id="itemQuantity" name="itemQuantity" min="1" max="100" value="1" step="1"/>
+                </td>
+                <td>49,99 Euro</td>
+              </tr>
+            </table>
+          </p>
+          <p><input type="submit" value="Zur Kasse gehen"></p>
+        </form>
+      </article>
+    </section>
+  </body>
+</html>

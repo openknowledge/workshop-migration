@@ -26,7 +26,6 @@ import java.util.Spliterator;
 import java.util.function.Consumer;
 
 import javax.validation.Path;
-import javax.validation.Path.Node;
 
 public class DefaultPath implements Path {
 

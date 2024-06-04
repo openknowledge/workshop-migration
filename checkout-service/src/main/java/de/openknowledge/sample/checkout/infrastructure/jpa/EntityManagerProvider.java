@@ -48,7 +48,7 @@ public class EntityManagerProvider {
         ofNullable(getenv("JAKARTA_PERSISTENCE_JDBC_URL")).ifPresent(setUrl);
         ofNullable(getenv("JAKARTA_PERSISTENCE_JDBC_USER")).ifPresent(setUser);
         ofNullable(getenv("JAKARTA_PERSISTENCE_JDBC_PASSWORD")).ifPresent(setPassword);
-        return Persistence.createEntityManagerFactory("offer-service", properties);
+        return Persistence.createEntityManagerFactory("checkout-service", properties);
     }
 
     public void closeEntityManagerFactory(@Disposes EntityManagerFactory entityManagerFactory) {

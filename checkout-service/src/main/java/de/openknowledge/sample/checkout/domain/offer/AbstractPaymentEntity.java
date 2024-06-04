@@ -25,13 +25,15 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.SequenceGenerator;
 
 @Entity
 @Inheritance(strategy = TABLE_PER_CLASS)
 public abstract class AbstractPaymentEntity<P extends Payment> {
 
     @Id
-    @GeneratedValue
+    @SequenceGenerator(name = "SEQ_PAYMENT")
+    @GeneratedValue(generator = "SEQ_PAYMENT")
     @Column(name = "PAY_ID")
     private long id;
     @OneToOne

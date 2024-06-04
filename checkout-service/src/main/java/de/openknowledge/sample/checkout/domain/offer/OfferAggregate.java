@@ -40,6 +40,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 @Entity
@@ -50,7 +51,8 @@ public class OfferAggregate {
     public static final String FIND_BY_OFFER_NUMBER = "OfferAggregate.findByOfferNumber";
 
     @Id
-    @GeneratedValue
+    @SequenceGenerator(name = "SEQ_OFFER")
+    @GeneratedValue(generator = "SEQ_OFFER")
     @Column(name = "OFF_ID")
     private long id;
 

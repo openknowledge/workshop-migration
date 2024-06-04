@@ -1,12 +1,23 @@
-version: '3'
-
 services:
+  shopping-cart-service:
+    build: shopping-cart-service/
+    ports:
+      - "4000:8080"
+    environment:
+      - CHECKOUT_SERVICE_URL=http://checkout-service:8080
+  
   checkout-database:
     image: postgres:16.1
-    ports:
-      - "5432:5432"
     environment:
-      - POSTGRES_PASSWORD=Pa55w0rd
+      - POSTGRES_PASSWORD=P@55w0rd
+
+  checkout-migration:
+    image: flyway/flyway:10.10
+    command: -url=jdbc:postgresql://checkout-database:5432/postgres -user=postgres -password=P@55w0rd -connectRetries=60 migrate
+    volumes:
+      - ./checkout-service/src/main/resources/db:/flyway/sql
+    depends_on:
+      - checkout-database
 
   checkout-service:
     build: checkout-service/
@@ -19,9 +30,40 @@ services:
       - ORDER_SERVICE_URL=http://order-service:8080
       - JAKARTA_PERSISTENCE_JDBC_URL=jdbc:postgresql://checkout-database:5432/postgres
       - JAKARTA_PERSISTENCE_JDBC_USER=postgres
-      - JAKARTA_PERSISTENCE_JDBC_PASSWORD=Pa55w0rd
+      - JAKARTA_PERSISTENCE_JDBC_PASSWORD=P@55w0rd
+
+  credit-card-service:
+    image: wiremock/wiremock:3.3.1-1
+    ports:
+      - "4002:8080"
+    volumes:
+      - ./wiremock:/home/wiremock
+
+  customer-care-database:
+    image: postgres:16.1
+    environment:
+      - POSTGRES_PASSWORD=P@55w0rd
+
+  customer-care-migration:
+    image: flyway/flyway:10.10
+    command: -url=jdbc:postgresql://customer-care-database:5432/postgres -user=postgres -password=P@55w0rd -connectRetries=60 migrate
+    volumes:
+      - ./customer-care-service/src/main/resources/db:/flyway/sql
+    depends_on:
+      - customer-care-database
 
   customer-care-service:
     build: customer-care-service/
     ports:
       - "4003:8080"
+    environment:
+      - EXTERNAL_URL=http://localhost:4003
+      - JAKARTA_PERSISTENCE_JDBC_URL=jdbc:postgresql://customer-care-database:5432/postgres
+      - JAKARTA_PERSISTENCE_JDBC_USER=postgres
+      - JAKARTA_PERSISTENCE_JDBC_PASSWORD=P@55w0rd
+
+  order-service:
+    build: order-service/
+    ports:
+      - "4004:8080"
+  

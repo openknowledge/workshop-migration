@@ -15,20 +15,29 @@
  */
 package de.openknowledge.sample.onlineshop.resource;
 
+import static javax.ws.rs.client.ClientBuilder.newClient;
+import static javax.ws.rs.core.MediaType.APPLICATION_FORM_URLENCODED;
+import static javax.ws.rs.core.Response.seeOther;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.net.URI;
+import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -38,7 +47,8 @@ import de.openknowledge.sample.onlineshop.domain.customer.CustomerAggregate;
 import de.openknowledge.sample.onlineshop.domain.customer.CustomerNumber;
 import de.openknowledge.sample.onlineshop.domain.order.OrderAggregate;
 import de.openknowledge.sample.onlineshop.domain.order.OrderStatus;
-import de.openknowledge.sample.onlineshop.infrastructure.jpa.Transactional;
+import de.openknowledge.sample.onlineshop.domain.order.ProductNumber;
+import de.openknowledge.sample.onlineshop.domain.order.Quantity;
 import de.openknowledge.sample.onlineshop.repository.CustomerRepository;
 import de.openknowledge.sample.onlineshop.repository.OrderRepository;
 
@@ -47,8 +57,8 @@ import de.openknowledge.sample.onlineshop.repository.OrderRepository;
 public class ShoppingCartResource {
 
     @Inject
-    @ConfigProperty(name = "external.url")
-    private URI url;
+    @ConfigProperty(name = "checkout-service.url")
+    private URI checkoutServiceUrl;
 
     @Inject
     private OrderRepository orderRepository;
@@ -68,5 +78,16 @@ public class ShoppingCartResource {
             buffer.lines().forEach(content::write);
             return Response.ok(content.toString()).type(MediaType.TEXT_HTML_TYPE).build();
         }
+    }
+
+    @POST
+    @Consumes(APPLICATION_FORM_URLENCODED)
+    public Response createOffer(@PathParam("customerNumber") CustomerNumber customerNumber, @FormParam("itemNumber") List<ProductNumber> productNumbers, @FormParam("itemQuantity") List<Quantity> quantities) {
+        Response response = newClient()
+            .target(checkoutServiceUrl)
+            .path("offers")
+            .request()
+            .post(Entity.entity(new Offer(customerNumber, productNumbers, quantities), MediaType.APPLICATION_JSON_TYPE));
+        return seeOther(response.getLocation()).build();
     }
 }

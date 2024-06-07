@@ -25,14 +25,18 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import de.openknowledge.sample.onlineshop.domain.order.OrderNumber;
+import de.openknowledge.sample.onlineshop.domain.order.OrderSummary;
 import de.openknowledge.sample.onlineshop.infrastructure.jpa.Transactional;
 import de.openknowledge.sample.onlineshop.service.OrderService;
 
@@ -53,6 +57,21 @@ public class OrderResource  {
     public Response createOrder(@FormParam("offerNumber") @Valid OrderNumber number) {
         orderService.order(number);
         return Response.seeOther(url.resolve("/orders/" + number.number())).build();
+    }
+
+    @POST
+    @Consumes({ "application/json" })
+    public Response createOrder(@Valid OrderSummary summary, @Context UriInfo uri) {
+    	OrderNumber orderNumber = orderService.order(summary);
+        return Response.created(uri.getAbsolutePathBuilder().path(orderNumber.number()).build()).build();
+    }
+
+    @PUT
+    @Path("/{orderNumber}")
+    @Consumes({ "application/json" })
+    public Response updateOrder(@PathParam("orderNumber") @Valid OrderNumber number, @Valid OrderSummary summary) {
+    	orderService.order(number, summary);
+    	return Response.ok().build();
     }
 
     @GET

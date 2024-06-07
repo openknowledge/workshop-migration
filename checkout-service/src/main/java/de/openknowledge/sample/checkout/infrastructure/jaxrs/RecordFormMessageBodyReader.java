@@ -13,23 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.openknowledge.sample.onlineshop.infrastructure.jaxrs;
+package de.openknowledge.sample.checkout.infrastructure.jaxrs;
 
 import static java.util.Arrays.stream;
-import static java.util.Optional.ofNullable;
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static javax.ws.rs.core.MediaType.APPLICATION_FORM_URLENCODED;
+import static javax.ws.rs.core.MediaType.MULTIPART_FORM_DATA;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
@@ -43,18 +43,20 @@ import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.Provider;
 import javax.ws.rs.ext.Providers;
 
-import de.openknowledge.sample.onlineshop.infrastructure.common.AbstractRecordConverter;
+import de.openknowledge.sample.checkout.infrastructure.common.AbstractRecordConverter;
 
 /**
  * A class to read lists of records from jaxrs json messages.
  */
 @Provider
 @ApplicationScoped
-@Consumes(APPLICATION_JSON)
-public class RecordMessageBodyReader extends AbstractRecordConverter implements MessageBodyReader<Record> {
+@Consumes({APPLICATION_FORM_URLENCODED, MULTIPART_FORM_DATA})
+public class RecordFormMessageBodyReader extends AbstractRecordConverter implements MessageBodyReader<Record> {
 
     @Context
     private Providers providers;
+    @Context
+    private HttpServletRequest request;
     @Inject
     private Instance<Validator> validatorInstance;
 
@@ -67,15 +69,12 @@ public class RecordMessageBodyReader extends AbstractRecordConverter implements 
     public Record readFrom(Class<Record> type, Type genericType, Annotation[] annotations, MediaType mediaType,
             MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
             throws IOException, WebApplicationException {
-        MessageBodyReader<Map> jsonReader = providers.getMessageBodyReader(Map.class, Map.class, annotations, mediaType);
-        Map<String, Object> value = jsonReader.readFrom(Map.class, Map.class, annotations, mediaType, httpHeaders, entityStream);
-        System.out.println(value);
         Set<ConstraintViolation<?>> violations = null;
         if (stream(annotations).map(Annotation::annotationType).anyMatch(Valid.class::equals)) {
             violations = new HashSet<>();
         }
-        Record result = type.cast(instantiate(type, value::get, violations));
-        if (ofNullable(violations).map(v -> !v.isEmpty()).orElse(false)) {
+        Record result = type.cast(instantiate(type, request.getParameterMap(), violations));
+        if (!violations.isEmpty()) {
             throw new ConstraintViolationException(violations);
         }
         return result;

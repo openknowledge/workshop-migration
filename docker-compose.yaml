@@ -12,6 +12,8 @@ services:
       - "5432:5432"
     environment:
       - POSTGRES_PASSWORD=P@55w0rd
+    volumes:
+      - ./database:/docker-entrypoint-initdb.d
 
   online-shop-migration:
     image: flyway/flyway:10.10
@@ -27,7 +29,27 @@ services:
       - "4000:8080"
     environment:
       - EXTERNAL_URL=http://localhost:4000
+      - CHECKOUT_SERVICE_URL=http://checkout-service:8080
       - JAKARTA_PERSISTENCE_JDBC_URL=jdbc:postgresql://online-shop-database:5432/postgres
+      - JAKARTA_PERSISTENCE_JDBC_USER=postgres
+      - JAKARTA_PERSISTENCE_JDBC_PASSWORD=P@55w0rd
+
+  checkout-migration:
+    image: flyway/flyway:10.10
+    command: -url=jdbc:postgresql://online-shop-database:5432/postgres -schemas=checkout -user=postgres -password=P@55w0rd -connectRetries=60 migrate
+    volumes:
+      - ./checkout-service/src/main/resources/db:/flyway/sql
+    depends_on:
+      - online-shop-database
+
+  checkout-service:
+    build: checkout-service/
+    ports:
+      - "4001:8080"
+    environment:
+      - EXTERNAL_URL=http://localhost:4001
+      - ONLINE_SHOP_URL=http://online-shop:8080
+      - JAKARTA_PERSISTENCE_JDBC_URL=jdbc:postgresql://online-shop-database:5432/postgres?currentSchema=checkout
       - JAKARTA_PERSISTENCE_JDBC_USER=postgres
       - JAKARTA_PERSISTENCE_JDBC_PASSWORD=P@55w0rd
 

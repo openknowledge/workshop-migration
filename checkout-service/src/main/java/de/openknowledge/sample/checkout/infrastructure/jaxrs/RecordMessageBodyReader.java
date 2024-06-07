@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.openknowledge.sample.onlineshop.infrastructure.jaxrs;
+package de.openknowledge.sample.checkout.infrastructure.jaxrs;
 
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
@@ -43,7 +43,7 @@ import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.Provider;
 import javax.ws.rs.ext.Providers;
 
-import de.openknowledge.sample.onlineshop.infrastructure.common.AbstractRecordConverter;
+import de.openknowledge.sample.checkout.infrastructure.common.AbstractRecordConverter;
 
 /**
  * A class to read lists of records from jaxrs json messages.
@@ -69,7 +69,6 @@ public class RecordMessageBodyReader extends AbstractRecordConverter implements 
             throws IOException, WebApplicationException {
         MessageBodyReader<Map> jsonReader = providers.getMessageBodyReader(Map.class, Map.class, annotations, mediaType);
         Map<String, Object> value = jsonReader.readFrom(Map.class, Map.class, annotations, mediaType, httpHeaders, entityStream);
-        System.out.println(value);
         Set<ConstraintViolation<?>> violations = null;
         if (stream(annotations).map(Annotation::annotationType).anyMatch(Valid.class::equals)) {
             violations = new HashSet<>();

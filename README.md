@@ -27,5 +27,16 @@ um in die Datenbank zu schauen.
 
 ## Aufgabe
 
-Navigieren Sie zum Warenkorb und schauen Sie sich dann den Inhalt der Tabelle `tab_order` an.
-Navigieren Sie durch den Checkout-Prozess und sehen Sie, wie sich der Inhalt der Tabelle ändert.
+Analysieren Sie den Unterschied in der Tabelle `tab_order` zu der monolithischen Variante.
+
+Fahren Sie das System dann herunter mit
+
+```
+docker compose down
+```
+
+Benennen Sie nun die Datei `checkout-service/src/main/resources/db/migration/create-interception-event-trigger.sql` um
+in `V1_0_1__create-interception-event-trigger.sql` damit sie bei der initialen Datenbank-Migration mit ausgeführt wird.
+Starten Sie das System erneut.
+
+Wie verändert sich das Verhalten der Tabelle `tab_order`?

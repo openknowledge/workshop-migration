@@ -10,21 +10,20 @@
       "mavenVersion": "3.8.6",
       "installGradle": "false"
     },
-    "docker-in-docker": {
-      "version": "latest",
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
       "dockerDashComposeVersion": "v2"
     }
   },
-  "containerEnv": {
-    "DISPLAY": "host.docker.internal:0.0"
-  },
+  "postCreateCommand": "cd golden-master-tests && npm ci && npx playwright install --with-deps chromium",
+  "postStartCommand": "docker compose up -d && cd golden-master-tests && npm run test:ui:codespaces",
   "customizations": {
     "vscode": {
       "settings": {},
       "extensions": [
-        "streetsidesoftware.code-spell-checker"
+        "streetsidesoftware.code-spell-checker",
+        "ms-playwright.playwright"
       ]
     }
-  }
+  },
+  "forwardPorts": [80, 4001, 8080, 8832]
 }
-

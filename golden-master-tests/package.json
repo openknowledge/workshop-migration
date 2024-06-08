@@ -1,0 +1,17 @@
+{
+  "name": "golden-master-tests",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "playwright test",
+    "test:ui": "playwright test --ui",
+    "test:ui:codespaces": "playwright test --ui --ui-host=0.0.0.0 --ui-port=8832",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.44.0",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "prettier": "^3.0.0"
+  }
+}

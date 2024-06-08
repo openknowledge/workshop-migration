@@ -49,7 +49,7 @@ jobs:
         working-directory: golden-master-tests
 
       - name: Run Playwright tests
-        run: npm test
+        run: npm run test:customercare
         working-directory: golden-master-tests
         env:
           ONLINE_SHOP_URL: http://localhost

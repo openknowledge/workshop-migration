@@ -1,21 +1,17 @@
 {
-  "name": "Online Shop",
-  "build": {
-    "dockerfile": "Dockerfile"
-  },
-  "features": {
-    "ghcr.io/devcontainers/features/java:1": {
-      "version": "none",
-      "installMaven": "true",
-      "mavenVersion": "3.8.6",
-      "installGradle": "false"
+  "name": "Workshop Migration",
+  "forwardPorts": [80, 4001],
+  "portsAttributes": {
+    "80": {
+      "label": "Online Shop",
+      "visibility": "public"
     },
     "ghcr.io/devcontainers/features/docker-in-docker:2": {
       "dockerDashComposeVersion": "v2"
     }
   },
-  "postCreateCommand": "cd golden-master-tests && npm ci && npx playwright install --with-deps chromium",
-  "postStartCommand": "docker compose up -d && cd golden-master-tests && npm run test:ui:codespaces",
+  "postCreateCommand": "sudo rm -f /etc/apt/sources.list.d/yarn.list && cd golden-master-tests && npm ci && npx playwright install --with-deps chromium",
+  "postStartCommand": ".devcontainer/setup.sh && docker compose up -d && cd golden-master-tests && npm run test:ui:codespaces",
   "customizations": {
     "vscode": {
       "settings": {},

@@ -26,6 +26,7 @@ import de.openknowledge.sample.onlineshop.domain.order.OrderNumber;
 import de.openknowledge.sample.onlineshop.domain.order.OrderStatus;
 import de.openknowledge.sample.onlineshop.infrastructure.jpa.Transactional;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 
 @ApplicationScoped
 public class OrderRepository {
@@ -42,7 +43,9 @@ public class OrderRepository {
         return entityManager.createNamedQuery(OrderAggregate.FIND_BY_CUSTOMER_NUMBER, OrderAggregate.class)
                 .setParameter("customerNumber", customerNumber.number())
                 .setParameter("orderStatus", status)
-                .getSingleResult();
+                .getResultStream()
+                .findAny()
+                .orElseThrow(NoResultException::new);
     }
 
     public OrderAggregate findByOrderNumber(OrderNumber number) {

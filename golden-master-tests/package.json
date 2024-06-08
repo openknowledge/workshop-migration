@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "test": "playwright test",
+    "test:customercare": "playwright test --grep 'customer care'",
     "test:ui": "playwright test --ui",
     "test:ui:codespaces": "playwright test --ui --ui-host=0.0.0.0 --ui-port=8832",
     "format": "prettier --write .",

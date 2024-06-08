@@ -173,7 +173,7 @@ public class OfferResource  {
             number,
             sameAsBillingAddress,
             sameAsBillingAddress ? null : new Address(street, houseNumber, zipCode, city));
-        return Response.seeOther(url.resolve(format("/online-shop/offers/%s/summary", number.number()))).build();
+        return Response.seeOther(url.resolve(format("/offers/%s/summary", number.number()))).build();
     }
 
     @GET

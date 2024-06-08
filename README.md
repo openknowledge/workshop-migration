@@ -29,5 +29,10 @@ um in die Datenbank zu schauen.
 
 ## Aufgabe
 
-Navigieren Sie zum Warenkorb und schauen Sie sich dann den Inhalt der Tabelle `tab_order` an.
-Navigieren Sie durch den Checkout-Prozess und sehen Sie, wie sich der Inhalt der Tabelle ändert.
+Die Datei `CheckoutTest` im Ordner 
+`golden-master-tests/src/test/java/de/openknowledge/sample/onlineshop/test`
+enthält einen UI-Test mit dem Framework Playwright.
+Führen Sie den Test aus und schauen Sie, dass er grün ist.
+Überlegen Sie, welche weiteren Pfade durch den Bestellabschluss es geben könnte.
+Schreiben Sie Tests für diese Fälle.
+Schreiben Sie auch Tests für das Pflegen der Adressen in der Kundenverwaltung.

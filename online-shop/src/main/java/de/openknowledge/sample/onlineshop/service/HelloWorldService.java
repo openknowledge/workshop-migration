@@ -13,26 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.openknowledge.sample.onlineshop.infrastructure.jsonb;
+package de.openknowledge.sample.onlineshop.service;
 
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
-import java.lang.annotation.Repeatable;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+import de.openknowledge.sample.onlineshop.repository.HelloRepository;
+import de.openknowledge.sample.onlineshop.repository.WorldRepository;
 
-@Target(TYPE)
-@Retention(RUNTIME)
-@Repeatable(JsonbSubclass.List.class)
-public @interface JsonbSubclass {
+@ApplicationScoped
+public class HelloWorldService {
 
-    String discriminatorProperty();
-    Class<?> subclass();
+    @Inject
+    private HelloRepository helloRepository;
+    @Inject
+    private WorldRepository worldRepository;
 
-    @Target(TYPE)
-    @Retention(RUNTIME)
-    @interface List {
-        JsonbSubclass[] value();
+    public String helloWorld() {
+        return helloRepository.getHello() + " " + worldRepository.getWorld();
     }
 }

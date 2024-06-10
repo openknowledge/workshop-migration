@@ -13,26 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.openknowledge.sample.onlineshop.infrastructure.jsonb;
+package de.openknowledge.sample.onlineshop.repository;
 
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import javax.enterprise.context.ApplicationScoped;
 
-import java.lang.annotation.Repeatable;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+@ApplicationScoped
+public class WorldRepository {
 
-@Target(TYPE)
-@Retention(RUNTIME)
-@Repeatable(JsonbSubclass.List.class)
-public @interface JsonbSubclass {
-
-    String discriminatorProperty();
-    Class<?> subclass();
-
-    @Target(TYPE)
-    @Retention(RUNTIME)
-    @interface List {
-        JsonbSubclass[] value();
+    public String getWorld() {
+        return "World";
     }
 }

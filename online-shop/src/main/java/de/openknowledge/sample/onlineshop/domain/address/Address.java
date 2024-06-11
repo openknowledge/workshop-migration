@@ -22,10 +22,11 @@ import javax.validation.constraints.NotNull;
 import javax.ws.rs.FormParam;
 
 public record Address(
-        @FormParam("street") @NotNull @Valid Street street,
-        @FormParam("houseNumber") @Valid HouseNumber houseNumber,
-        @FormParam("zipCode") @NotNull @Valid ZipCode zipCode,
-        @FormParam("city") @NotNull @Valid City city) {
+    @FormParam("street") @NotNull @Valid Street street,
+    @FormParam("houseNumber") @Valid HouseNumber houseNumber,
+    @FormParam("zipCode") @NotNull @Valid ZipCode zipCode,
+    @FormParam("city") @NotNull @Valid City city) {
+
     public Address {
         requireNonNull(street);
         requireNonNull(zipCode);

@@ -86,25 +86,25 @@ public class OrderService {
 
     @Transactional
     public void order(OrderNumber number) {
-		OrderSummary summary = createSummary(number);
-		order(number, summary);
-	}
+        OrderSummary summary = createSummary(number);
+        order(number, summary);
+    }
 
     @Transactional
-	public OrderNumber order(OrderSummary summary) {
-		OrderAggregate order = repository.findByCustomer(summary.customerNumber());
-		return order(order.getOrderNumber(), summary);
-	}
+    public OrderNumber order(OrderSummary summary) {
+        OrderAggregate order = repository.findByCustomer(summary.customerNumber());
+        return order(order.getOrderNumber(), summary);
+    }
 
     @Transactional
     public OrderNumber order(OrderNumber orderNumber, OrderSummary summary) {
         OrderAggregate order = repository.findByOrderNumber(orderNumber);
-		order.update(summary);
-    	order.setStatus(ORDERED);
-		return order.getOrderNumber();
-	}
+        order.update(summary);
+        order.setStatus(ORDERED);
+        return order.getOrderNumber();
+    }
 
-	@Transactional
+    @Transactional
     public void createOrder(OrderNumber offerNumber) {
         OrderAggregate order = repository.findByOrderNumber(offerNumber);
         order.setStatus(ORDERED);

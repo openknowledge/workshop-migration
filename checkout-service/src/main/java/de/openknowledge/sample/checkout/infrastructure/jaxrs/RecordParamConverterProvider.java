@@ -36,12 +36,12 @@ public class RecordParamConverterProvider implements ParamConverterProvider {
     private <R extends Record> ParamConverter<R> createConverter(Class<R> recordClass) {
         return new Converter<R>(recordClass);
     }
-    
+
     private static class Converter<T extends Record> implements ParamConverter<T> {
 
         private Class<T> recordClass;
-        
-        public Converter(Class<T> recordClass) {
+
+        Converter(Class<T> recordClass) {
             this.recordClass = recordClass;
         }
 

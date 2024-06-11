@@ -31,7 +31,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
 public abstract class AbstractRecordConverter {
-    
+
     protected Object instantiate(Type type, Object value, Set<ConstraintViolation<?>> violations) {
         if (value instanceof Map) {
             return instantiate((Class<?>)type, ((Map<String, Object>)value)::get, violations);

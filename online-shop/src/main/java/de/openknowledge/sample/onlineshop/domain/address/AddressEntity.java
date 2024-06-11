@@ -55,11 +55,11 @@ public class AddressEntity {
     }
 
     public AddressEntity(CustomerAggregate customer, Address address) {
-    	this.customer = requireNonNull(customer);
-    	this.address = requireNonNull(address);
+        this.customer = requireNonNull(customer);
+        this.address = requireNonNull(address);
     }
 
     public Address getAddress() {
-    	return address;
+        return address;
     }
 }

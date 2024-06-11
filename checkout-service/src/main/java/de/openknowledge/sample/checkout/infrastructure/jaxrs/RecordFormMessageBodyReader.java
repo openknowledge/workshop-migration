@@ -62,13 +62,18 @@ public class RecordFormMessageBodyReader extends AbstractRecordConverter impleme
 
     @Override
     public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
-        return type.isRecord(); 
+        return type.isRecord();
     }
 
     @Override
-    public Record readFrom(Class<Record> type, Type genericType, Annotation[] annotations, MediaType mediaType,
-            MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
-            throws IOException, WebApplicationException {
+    public Record readFrom(
+        Class<Record> type,
+        Type genericType,
+        Annotation[] annotations,
+        MediaType mediaType,
+        MultivaluedMap<String, String> httpHeaders,
+        InputStream entityStream) throws IOException, WebApplicationException {
+
         Set<ConstraintViolation<?>> violations = null;
         if (stream(annotations).map(Annotation::annotationType).anyMatch(Valid.class::equals)) {
             violations = new HashSet<>();

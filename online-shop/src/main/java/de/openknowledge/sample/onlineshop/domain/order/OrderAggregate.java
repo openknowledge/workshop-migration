@@ -52,8 +52,12 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "TAB_ORDER")
-@NamedQuery(name = FIND_BY_ORDER_NUMBER, query = "SELECT o FROM OrderAggregate o WHERE o.orderNumber.number = :number")
-@NamedQuery(name = FIND_BY_CUSTOMER_NUMBER, query = "SELECT o FROM OrderAggregate o WHERE o.customer.customerNumber.number = :number")
+@NamedQuery(
+    name = FIND_BY_ORDER_NUMBER,
+    query = "SELECT o FROM OrderAggregate o WHERE o.orderNumber.number = :orderNumber")
+@NamedQuery(
+    name = FIND_BY_CUSTOMER_NUMBER,
+    query = "SELECT o FROM OrderAggregate o WHERE o.customer.customerNumber.number = :customerNumber")
 public class OrderAggregate {
 
     public static final String FIND_BY_ORDER_NUMBER = "OrderAggregate.findByOrderNumber";
@@ -132,8 +136,8 @@ public class OrderAggregate {
 
     public void setBillingAddress(Address address) {
         this.billingAddress = customer.getAddress(address).orElseGet(() -> {
-        	customer.addAddress(address);
-        	return customer.getAddress(address).get();
+            customer.addAddress(address);
+            return customer.getAddress(address).get();
         });
     }
 
@@ -143,32 +147,37 @@ public class OrderAggregate {
 
     public void setDeliveryAddress(Address address) {
         this.deliveryAddress = customer.getAddress(address).orElseGet(() -> {
-        	customer.addAddress(address);
-        	return customer.getAddress(address).get();
+            customer.addAddress(address);
+            return customer.getAddress(address).get();
         });
     }
 
-	public void setStatus(OrderStatus status) {
-		this.status = requireNonNull(status);
-	}
+    public void setStatus(OrderStatus status) {
+        this.status = requireNonNull(status);
+    }
 
-	public void update(OrderSummary summary) {
-		if (!summary.customerNumber().equals(customer.getCustomerNumber())) {
-			throw new IllegalArgumentException("Changing the customer is not allowed");
-		}
-		setBillingAddress(summary.billingAddress());
-		setDeliveryAddress(summary.deliveryAddress());
-		if (summary.isCreditCardPayment()) {
-			setPayment((CreditCardPayment)summary.payment());
-		} else if (summary.isDirectBillingPayment()) {
-			setPayment((DirectBillingPayment)summary.payment());
-		} else {
-			setPayment((EmailPayment)summary.payment());
-		}
-		this.items = summary.items();
-	}
+    public void update(OrderSummary summary) {
+        if (!summary.customerNumber().equals(customer.getCustomerNumber())) {
+            throw new IllegalArgumentException("Changing the customer is not allowed");
+        }
+        setBillingAddress(summary.billingAddress());
+        setDeliveryAddress(summary.deliveryAddress());
+        if (summary.isCreditCardPayment()) {
+            setPayment((CreditCardPayment)summary.payment());
+        } else if (summary.isDirectBillingPayment()) {
+            setPayment((DirectBillingPayment)summary.payment());
+        } else {
+            setPayment((EmailPayment)summary.payment());
+        }
+        this.items = summary.items();
+    }
 
-	public OrderSummary toSummary() {
-        return new OrderSummary(customer.getCustomerNumber(), items, payment.get(), billingAddress.getAddress(), deliveryAddress.getAddress());
+    public OrderSummary toSummary() {
+        return new OrderSummary(
+            customer.getCustomerNumber(),
+            items,
+            payment.get(),
+            billingAddress.getAddress(),
+            deliveryAddress.getAddress());
     }
 }

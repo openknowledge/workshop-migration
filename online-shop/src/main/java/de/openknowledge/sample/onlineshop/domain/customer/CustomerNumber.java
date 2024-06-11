@@ -33,6 +33,6 @@ public record CustomerNumber(@NotNull @Pattern(regexp = "\\d+") String number) {
     }
 
     public static class Adapter extends AbstractRecordValueTypeAdapter<CustomerNumber, String> {
- 
+
     }
 }

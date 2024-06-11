@@ -33,7 +33,7 @@ public class OfferBean {
 
     private OfferNumber number;
     private CustomerNumber customerNumber;
-    
+
     public OfferNumber getNumber() {
         return number;
     }

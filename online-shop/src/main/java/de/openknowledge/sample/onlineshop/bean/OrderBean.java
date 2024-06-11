@@ -25,7 +25,7 @@ import de.openknowledge.sample.onlineshop.domain.order.OrderSummary;
 public class OrderBean {
 
     private OrderSummary order;
-    
+
     public OrderSummary getOrder() {
         return this.order;
     }

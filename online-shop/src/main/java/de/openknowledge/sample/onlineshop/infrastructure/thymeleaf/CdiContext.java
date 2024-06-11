@@ -36,7 +36,7 @@ public class CdiContext implements IContext {
 
     @Inject
     private Instance<Object> instance;
-    
+
     private Locale locale;
     private Set<String> beanNames;
 

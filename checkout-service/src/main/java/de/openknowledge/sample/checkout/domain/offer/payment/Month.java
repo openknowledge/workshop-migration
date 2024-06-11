@@ -29,10 +29,14 @@ import jakarta.persistence.Embeddable;
 
 @Embeddable
 @JsonbTypeAdapter(Adapter.class)
-public record Month(@NotNull @Min(1) @Max(12) Integer month) {
+public record Month(@NotNull @Min(JANUARY) @Max(DECEMBER) Integer month) {
+
+    private static final int JANUARY = 1;
+    private static final int DECEMBER = 12;
+
     public Month {
         requireNonNull(month);
-        inclusiveBetween(1, 12, month.intValue());
+        inclusiveBetween(JANUARY, DECEMBER, month.intValue());
     }
 
     public Month(String expiryMonth) {
@@ -40,6 +44,6 @@ public record Month(@NotNull @Min(1) @Max(12) Integer month) {
     }
 
     public static class Adapter extends AbstractRecordValueTypeAdapter<Month, Integer> {
-        
+
     }
 }

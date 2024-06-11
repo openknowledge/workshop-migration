@@ -64,17 +64,18 @@ public class ShoppingCartResource {
     private OrderRepository orderRepository;
     @Inject
     private CustomerRepository customerRepository;
-    
+
     @GET
     @Produces(MediaType.TEXT_HTML)
     public Response getShoppingCart(@PathParam("customerNumber") CustomerNumber number) throws IOException {
-    	CustomerAggregate customer = customerRepository.findCustomer(number).orElseThrow(NotFoundException::new);
+        CustomerAggregate customer = customerRepository.findCustomer(number).orElseThrow(NotFoundException::new);
         OrderAggregate aggregate = new OrderAggregate(customer, OrderStatus.SHOPPING_CART);
         orderRepository.persist(aggregate);
 
         try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream("META-INF/resources/shopping-cart.html");
-                BufferedReader buffer = new BufferedReader(new InputStreamReader(inputStream));
-                StringWriter content = new StringWriter()) {
+            BufferedReader buffer = new BufferedReader(new InputStreamReader(inputStream));
+            StringWriter content = new StringWriter()) {
+
             buffer.lines().forEach(content::write);
             return Response.ok(content.toString()).type(MediaType.TEXT_HTML_TYPE).build();
         }
@@ -82,7 +83,11 @@ public class ShoppingCartResource {
 
     @POST
     @Consumes(APPLICATION_FORM_URLENCODED)
-    public Response createOffer(@PathParam("customerNumber") CustomerNumber customerNumber, @FormParam("itemNumber") List<ProductNumber> productNumbers, @FormParam("itemQuantity") List<Quantity> quantities) {
+    public Response createOffer(
+        @PathParam("customerNumber") CustomerNumber customerNumber,
+        @FormParam("itemNumber") List<ProductNumber> productNumbers,
+        @FormParam("itemQuantity") List<Quantity> quantities) {
+
         Response response = newClient()
             .target(checkoutServiceUrl)
             .path("offers")

@@ -37,27 +37,29 @@ import javax.ws.rs.core.Response;
 @Path("/")
 public class StaticResource  {
 
-	@GET
-	@Path("{filename: [a-z0-9\\-\\_]+\\.[a-z0-9\\\\-]+}")
-	public Response getResource(@PathParam("filename") String filename) {
+    @GET
+    @Path("{filename: [a-z0-9\\-\\_]+\\.[a-z0-9\\\\-]+}")
+    public Response getResource(@PathParam("filename") String filename) {
         try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(String.format("META-INF/resources/%s", filename));
             BufferedReader buffer = new BufferedReader(new InputStreamReader(inputStream));
             StringWriter stringContent = new StringWriter();
             PrintWriter content = new PrintWriter(stringContent)) {
-            
+
             if (filename.endsWith(".png") || filename.endsWith(".jpg")) {
-            	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            	copy(inputStream, outputStream);
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                copy(inputStream, outputStream);
                 return Response.ok(outputStream.toByteArray()).type("image/" + filename.substring(filename.lastIndexOf('.') + 1)).build();
             } else {
                 buffer.lines().forEach(content::println);
-                String mediaType = filename.endsWith(".js") ? "application/javascript" : "text/" + filename.substring(filename.lastIndexOf('.') + 1);
+                String mediaType = filename.endsWith(".js")
+                    ? "application/javascript"
+                    : "text/" + filename.substring(filename.lastIndexOf('.') + 1);
                 return Response.ok(stringContent.toString()).type(mediaType).build();
             }
         } catch (NullPointerException e) {
-        	return Response.status(NOT_FOUND).build();
+            return Response.status(NOT_FOUND).build();
         } catch (IOException e) {
             return Response.status(INTERNAL_SERVER_ERROR).build();
         }
-	}
+    }
 }

@@ -19,6 +19,7 @@ import static javax.ws.rs.client.ClientBuilder.newClient;
 import static javax.ws.rs.client.Entity.form;
 import static javax.ws.rs.core.Response.Status.SEE_OTHER;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.flywaydb.core.Flyway.configure;
 
 import java.io.IOException;
 import java.net.URI;
@@ -80,16 +81,13 @@ public class OrderTest {
 
     @BeforeAll
     public static void configureDatabase() {
-        System.setProperty("jakarta.persistence.jdbc.url", postgresqlContainer.getJdbcUrl());
-        System.setProperty("jakarta.persistence.jdbc.user", postgresqlContainer.getUsername());
-        System.setProperty("jakarta.persistence.jdbc.password", postgresqlContainer.getPassword());
-        Flyway flyway = Flyway
-            .configure()
-            .dataSource(
-                postgresqlContainer.getJdbcUrl(),
-                postgresqlContainer.getUsername(),
-                postgresqlContainer.getPassword())
-            .cleanDisabled(false).load();
+        String jdbcUrl = postgresqlContainer.getJdbcUrl();
+        String username = postgresqlContainer.getUsername();
+        String password = postgresqlContainer.getPassword();
+        System.setProperty("jakarta.persistence.jdbc.url", jdbcUrl);
+        System.setProperty("jakarta.persistence.jdbc.user", username);
+        System.setProperty("jakarta.persistence.jdbc.password", password);
+        Flyway flyway = configure().dataSource(jdbcUrl, username, password).cleanDisabled(false).load();
         flyway.clean();
         flyway.migrate();
     }
@@ -114,7 +112,7 @@ public class OrderTest {
                             }
                         ]
                     }
-                    """));
+            """));
         String paymentPath = response.getLocation().getPath();
         String offerPath = paymentPath.substring(0, paymentPath.lastIndexOf("/"));
         String offerNumber = offerPath.substring(offerPath.lastIndexOf("/") + 1);
@@ -170,11 +168,11 @@ public class OrderTest {
     @Test
     public void createOrderWithCreditCard() {
         setPayment(new CreditCardPayment(
-                new Owner("Max Mustermann"),
-                new CreditCardNumber("1234567890123456"),
-                new Month(1),
-                new Year(2024),
-                new CardVerificationNumber("123")));
+            new Owner("Max Mustermann"),
+            new CreditCardNumber("1234567890123456"),
+            new Month(1),
+            new Year(2024),
+            new CardVerificationNumber("123")));
         setBillingAddress(new Address(new Street("Poststr."), new HouseNumber("1"), new ZipCode("26122"), new City("Oldenburg")));
         setDeliveryAddress(new Address(new Street("II. Hagen"), new HouseNumber("7"), new ZipCode("45127"), new City("Essen")));
 
@@ -182,7 +180,7 @@ public class OrderTest {
             .path("orders")
             .request()
             .post(form(new Form()));
-        
+
         assertThat(response.getStatus()).isEqualTo(SEE_OTHER.getStatusCode());
         assertThat(response.getLocation().toString()).isEqualTo(offerUri + "/success");
     }
@@ -235,9 +233,9 @@ public class OrderTest {
     public void createOrderWithDirectBilling() {
         setPayment(new EmailPayment(new Email("max.mustermann@openknowledge.de")));
         setPayment(new DirectBillingPayment(
-                new Owner("Max Mustermann"),
-                new InternationalBankAccountNumber("DE1234567890123456"),
-                new BankIdentifierCode("1234567890")));
+            new Owner("Max Mustermann"),
+            new InternationalBankAccountNumber("DE1234567890123456"),
+            new BankIdentifierCode("1234567890")));
         setBillingAddress(new Address(new Street("Poststr."), new HouseNumber("1"), new ZipCode("26122"), new City("Oldenburg")));
         setDeliveryAddress(new Address(new Street("II. Hagen"), new HouseNumber("7"), new ZipCode("45127"), new City("Essen")));
 
@@ -245,7 +243,7 @@ public class OrderTest {
             .path("orders")
             .request()
             .post(form(new Form()));
-        
+
         assertThat(response.getStatus()).isEqualTo(SEE_OTHER.getStatusCode());
         assertThat(response.getLocation().toString()).isEqualTo(offerUri + "/success");
     }
@@ -302,31 +300,25 @@ public class OrderTest {
             .path("orders")
             .request()
             .post(form(new Form()));
-        
+
         assertThat(response.getStatus()).isEqualTo(SEE_OTHER.getStatusCode());
         assertThat(response.getLocation().toString()).isEqualTo(offerUri + "/success");
     }
 
     private void setPayment(DirectBillingPayment directBillingPayment) {
-        newClient().target(offerUri)
-                .path("direct-billing-payment")
-                .request()
-                .post(form(new Form()
-                        .param("name", directBillingPayment.name().name())
-                        .param("iban", directBillingPayment.iban().number())
-                        .param("bic", directBillingPayment.bic().code())));
+        newClient().target(offerUri).path("direct-billing-payment").request().post(form(new Form()
+            .param("name", directBillingPayment.name().name())
+            .param("iban", directBillingPayment.iban().number())
+            .param("bic", directBillingPayment.bic().code())));
     }
 
     private void setPayment(CreditCardPayment creditCardPayment) {
-        newClient().target(offerUri)
-                .path("credit-card-payment")
-                .request()
-                .post(form(new Form()
-                        .param("name", creditCardPayment.name().name())
-                        .param("number", creditCardPayment.number().number())
-                        .param("expiryMonth", Integer.toString(creditCardPayment.expiryMonth().month()))
-                        .param("expiryYear", Integer.toString(creditCardPayment.expiryYear().year()))
-                        .param("cvn", creditCardPayment.cvn().number())));
+        newClient().target(offerUri).path("credit-card-payment").request().post(form(new Form()
+            .param("name", creditCardPayment.name().name())
+            .param("number", creditCardPayment.number().number())
+            .param("expiryMonth", Integer.toString(creditCardPayment.expiryMonth().month()))
+            .param("expiryYear", Integer.toString(creditCardPayment.expiryYear().year()))
+            .param("cvn", creditCardPayment.cvn().number())));
     }
 
     private void setPayment(EmailPayment emailPayment) {
@@ -337,24 +329,18 @@ public class OrderTest {
     }
 
     private void setBillingAddress(Address address) {
-        newClient().target(offerUri)
-            .path("billing-address")
-            .request()
-            .post(form(new Form()
-                    .param("street", address.street().name())
-                    .param("houseNumber", address.houseNumber().number())
-                    .param("zipCode", address.zipCode().code())
-                    .param("city", address.city().name())));
+        newClient().target(offerUri).path("billing-address").request().post(form(new Form()
+            .param("street", address.street().name())
+            .param("houseNumber", address.houseNumber().number())
+            .param("zipCode", address.zipCode().code())
+            .param("city", address.city().name())));
     }
 
     private void setDeliveryAddress(Address address) {
-        newClient().target(offerUri)
-            .path("delivery-address")
-            .request()
-            .post(form(new Form()
-                    .param("street", address.street().name())
-                    .param("houseNumber", address.houseNumber().number())
-                    .param("zipCode", address.zipCode().code())
-                    .param("city", address.city().name())));
+        newClient().target(offerUri).path("delivery-address").request().post(form(new Form()
+            .param("street", address.street().name())
+            .param("houseNumber", address.houseNumber().number())
+            .param("zipCode", address.zipCode().code())
+            .param("city", address.city().name())));
     }
 }

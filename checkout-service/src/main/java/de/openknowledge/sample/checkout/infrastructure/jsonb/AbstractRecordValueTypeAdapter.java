@@ -26,7 +26,7 @@ import de.openknowledge.sample.checkout.infrastructure.common.ObjectBuilder;
  * A base class to convert records from and to json.
  */
 public class AbstractRecordValueTypeAdapter<R extends Record, P> implements JsonbAdapter<R, P> {
-    
+
     private ObjectBuilder<R> recordBuilder;
     private Method accessor;
 
@@ -34,7 +34,8 @@ public class AbstractRecordValueTypeAdapter<R extends Record, P> implements Json
         recordBuilder = ObjectBuilder.<R>fromGenericType(getClass(), AbstractRecordValueTypeAdapter.class, 0);
         RecordComponent[] recordComponents = recordBuilder.getType().getRecordComponents();
         if (recordComponents.length > 1) {
-            throw new IllegalStateException("Unsupported record type " + recordBuilder.getType() + ". Only records with one component are supported");
+            throw new IllegalStateException(
+                "Unsupported record type " + recordBuilder.getType() + ". Only records with one component are supported");
         }
         RecordComponent component = recordComponents[0];
         accessor = component.getAccessor();

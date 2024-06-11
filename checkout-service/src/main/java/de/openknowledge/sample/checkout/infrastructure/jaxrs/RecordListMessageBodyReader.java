@@ -67,17 +67,26 @@ public class RecordListMessageBodyReader extends AbstractRecordConverter impleme
     @Override
     public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
         return List.class.equals(type)
-            && (genericType instanceof ParameterizedType)
-            && (((ParameterizedType)genericType).getActualTypeArguments()[0] instanceof Class)
-            && ((Class<?>)((ParameterizedType)genericType).getActualTypeArguments()[0]).isRecord()
+            && hasRecordTypeArgument(genericType)
             && (mediaType.isCompatible(APPLICATION_JSON_TYPE)
                 || stream(annotations).map(Annotation::annotationType).anyMatch(BeanParam.class::equals));
     }
 
+    private boolean hasRecordTypeArgument(Type genericType) {
+        return (genericType instanceof ParameterizedType)
+            && (((ParameterizedType)genericType).getActualTypeArguments()[0] instanceof Class)
+            && ((Class<?>)((ParameterizedType)genericType).getActualTypeArguments()[0]).isRecord();
+    }
+
     @Override
-    public List<? extends Record> readFrom(Class<List<? extends Record>> type, Type genericType, Annotation[] annotations, MediaType mediaType,
-            MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
-            throws IOException, WebApplicationException {
+    public List<? extends Record> readFrom(
+        Class<List<? extends Record>> type,
+        Type genericType,
+        Annotation[] annotations,
+        MediaType mediaType,
+        MultivaluedMap<String, String> httpHeaders,
+        InputStream entityStream) throws IOException, WebApplicationException {
+
         Type genericList = new GenericType<List<Map>>() { }.getType();
         MessageBodyReader<List> jsonReader = providers.getMessageBodyReader(List.class, genericList, annotations, mediaType);
         List<?> value = jsonReader.readFrom(List.class, genericList, annotations, mediaType, httpHeaders, entityStream);

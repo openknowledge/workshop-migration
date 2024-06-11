@@ -15,6 +15,8 @@
  */
 package de.openknowledge.sample.onlineshop.resource;
 
+import static java.lang.String.format;
+
 import java.net.URI;
 import java.util.function.Function;
 
@@ -47,8 +49,8 @@ public class AddressResource  {
     @Inject
     @ConfigProperty(name = "external.url")
     private URI externalUrl;
-	@Inject
-	private CustomerBean customerBean;
+    @Inject
+    private CustomerBean customerBean;
     @Inject
     private Function<String, String> templateProcessor;
     @Inject
@@ -58,15 +60,15 @@ public class AddressResource  {
     @Transactional
     @Consumes({ "application/json" })
     public Response addAddress(@PathParam("customerNumber") @Valid CustomerNumber customerNumber, @Valid @NotNull Address address) {
-    	CustomerAggregate customer = repository.findCustomer(customerNumber).orElseThrow(NotFoundException::new);
-    	customer.addAddress(address);
+        CustomerAggregate customer = repository.findCustomer(customerNumber).orElseThrow(NotFoundException::new);
+        customer.addAddress(address);
         return Response.ok().build();
     }
 
     @GET
     @Produces({ "text/html" })
     public String showAddressPage(@PathParam("customerNumber") @Valid CustomerNumber customerNumber) {
-    	CustomerAggregate customer = repository.findCustomer(customerNumber).orElseThrow(NotFoundException::new);
+        CustomerAggregate customer = repository.findCustomer(customerNumber).orElseThrow(NotFoundException::new);
         customerBean.setCustomer(customer);
         return templateProcessor.apply("addresses");
     }
@@ -74,7 +76,7 @@ public class AddressResource  {
     @GET
     @Produces({ "application/json" })
     public Response getAddresses(@PathParam("customerNumber") @Valid CustomerNumber customerNumber) {
-    	CustomerAggregate customer = repository.findCustomer(customerNumber).orElseThrow(NotFoundException::new);
+        CustomerAggregate customer = repository.findCustomer(customerNumber).orElseThrow(NotFoundException::new);
         return Response.ok(customer.getAddresses()).build();
     }
 
@@ -82,8 +84,8 @@ public class AddressResource  {
     @Path("/default-billing")
     @Produces({ "application/json" })
     public Address getDefaultBillingAddress(@PathParam("customerNumber") @Valid CustomerNumber customerNumber) {
-    	CustomerAggregate customer = repository.findCustomer(customerNumber).orElseThrow(NotFoundException::new);
-    	return customer.getDefaultBillingAddress().orElseThrow(NotFoundException::new);
+        CustomerAggregate customer = repository.findCustomer(customerNumber).orElseThrow(NotFoundException::new);
+        return customer.getDefaultBillingAddress().orElseThrow(NotFoundException::new);
     }
 
     @POST
@@ -91,19 +93,20 @@ public class AddressResource  {
     @Path("/default-billing")
     @Consumes("application/x-www-form-urlencoded")
     public Response setDefaultBillingAddress(
-            @PathParam("customerNumber") @Valid CustomerNumber customerNumber,
-            @NotNull @Valid Address address) {
-    	CustomerAggregate customer = repository.findCustomer(customerNumber).orElseThrow(NotFoundException::new);
-    	customer.setDefaultBillingAddress(address);
-        return Response.seeOther(externalUrl.resolve("/customers/" + customerNumber.number() + "/addresses")).build();
+        @PathParam("customerNumber") @Valid CustomerNumber customerNumber,
+        @NotNull @Valid Address address) {
+
+        CustomerAggregate customer = repository.findCustomer(customerNumber).orElseThrow(NotFoundException::new);
+        customer.setDefaultBillingAddress(address);
+        return Response.seeOther(getAddressesUri(customerNumber)).build();
     }
-    
+
     @GET
     @Path("/default-delivery")
     @Produces({ "application/json" })
     public Address getDefaultDeliveryAddress(@PathParam("customerNumber") @Valid CustomerNumber customerNumber) {
-    	CustomerAggregate customer = repository.findCustomer(customerNumber).orElseThrow(NotFoundException::new);
-    	return customer.getDefaultDeliveryAddress().orElseThrow(NotFoundException::new);
+        CustomerAggregate customer = repository.findCustomer(customerNumber).orElseThrow(NotFoundException::new);
+        return customer.getDefaultDeliveryAddress().orElseThrow(NotFoundException::new);
     }
 
     @POST
@@ -111,10 +114,15 @@ public class AddressResource  {
     @Path("/default-delivery")
     @Consumes("application/x-www-form-urlencoded")
     public Response setDefaultDeliveryAddress(
-            @PathParam("customerNumber") @Valid CustomerNumber customerNumber,
-            @NotNull @Valid Address address) {
-    	CustomerAggregate customer = repository.findCustomer(customerNumber).orElseThrow(NotFoundException::new);
-    	customer.setDefaultDeliveryAddress(address);
-        return Response.seeOther(externalUrl.resolve("/customers/" + customerNumber.number() + "/addresses")).build();
+        @PathParam("customerNumber") @Valid CustomerNumber customerNumber,
+        @NotNull @Valid Address address) {
+
+        CustomerAggregate customer = repository.findCustomer(customerNumber).orElseThrow(NotFoundException::new);
+        customer.setDefaultDeliveryAddress(address);
+        return Response.seeOther(getAddressesUri(customerNumber)).build();
+    }
+
+    private URI getAddressesUri(CustomerNumber customerNumber) {
+        return externalUrl.resolve(format("/customers/%s/addresses", customerNumber.number()));
     }
 }

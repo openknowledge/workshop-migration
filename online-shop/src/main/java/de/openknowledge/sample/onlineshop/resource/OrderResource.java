@@ -49,8 +49,8 @@ public class OrderResource  {
     private URI url;
     @Inject
     private Function<String, String> templateProcessor;
-	@Inject
-	private OrderService orderService;
+    @Inject
+    private OrderService orderService;
 
     @POST
     @Consumes("application/x-www-form-urlencoded")
@@ -62,7 +62,7 @@ public class OrderResource  {
     @POST
     @Consumes({ "application/json" })
     public Response createOrder(@Valid OrderSummary summary, @Context UriInfo uri) {
-    	OrderNumber orderNumber = orderService.order(summary);
+        OrderNumber orderNumber = orderService.order(summary);
         return Response.created(uri.getAbsolutePathBuilder().path(orderNumber.number()).build()).build();
     }
 
@@ -70,8 +70,8 @@ public class OrderResource  {
     @Path("/{orderNumber}")
     @Consumes({ "application/json" })
     public Response updateOrder(@PathParam("orderNumber") @Valid OrderNumber number, @Valid OrderSummary summary) {
-    	orderService.order(number, summary);
-    	return Response.ok().build();
+        orderService.order(number, summary);
+        return Response.ok().build();
     }
 
     @GET

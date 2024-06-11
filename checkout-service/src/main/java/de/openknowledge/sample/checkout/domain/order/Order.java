@@ -32,11 +32,12 @@ import de.openknowledge.sample.checkout.domain.offer.payment.EmailPayment;
 import de.openknowledge.sample.checkout.domain.offer.payment.Payment;
 
 public record Order(
-        @NotNull @Valid CustomerNumber customerNumber,
-        @NotNull @Valid List<Item> items,
-        @NotNull @Valid Payment payment,
-        @NotNull @Valid Address billingAddress,
-        @NotNull @Valid Address deliveryAddress) {
+    @NotNull @Valid CustomerNumber customerNumber,
+    @NotNull @Valid List<Item> items,
+    @NotNull @Valid Payment payment,
+    @NotNull @Valid Address billingAddress,
+    @NotNull @Valid Address deliveryAddress) {
+
     public Order {
         requireNonNull(customerNumber);
         requireNonNull(items);

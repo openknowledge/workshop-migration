@@ -15,6 +15,8 @@
  */
 package de.openknowledge.sample.checkout.application;
 
+import static org.flywaydb.core.Flyway.configure;
+
 import org.apache.meecrowave.Meecrowave;
 import org.apache.meecrowave.junit5.MeecrowaveConfig;
 import org.apache.meecrowave.testing.ConfigurationInject;
@@ -45,19 +47,16 @@ public class OfferTest {
 
     @ConfigurationInject
     private Meecrowave.Builder config;
-    
+
     @BeforeAll
     public static void configureDatabase() {
-        System.setProperty("jakarta.persistence.jdbc.url", postgresqlContainer.getJdbcUrl());
-        System.setProperty("jakarta.persistence.jdbc.user", postgresqlContainer.getUsername());
-        System.setProperty("jakarta.persistence.jdbc.password", postgresqlContainer.getPassword());
-        Flyway flyway = Flyway
-            .configure()
-            .dataSource(
-                postgresqlContainer.getJdbcUrl(),
-                postgresqlContainer.getUsername(),
-                postgresqlContainer.getPassword())
-            .cleanDisabled(false).load();
+        String jdbcUrl = postgresqlContainer.getJdbcUrl();
+        String username = postgresqlContainer.getUsername();
+        String password = postgresqlContainer.getPassword();
+        System.setProperty("jakarta.persistence.jdbc.url", jdbcUrl);
+        System.setProperty("jakarta.persistence.jdbc.user", username);
+        System.setProperty("jakarta.persistence.jdbc.password", password);
+        Flyway flyway = configure().dataSource(jdbcUrl, username, password).cleanDisabled(false).load();
         flyway.clean();
         flyway.migrate();
     }

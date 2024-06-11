@@ -20,16 +20,14 @@ import static java.util.Objects.requireNonNull;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
-public record DirectBillingPayment (
-  @NotNull @Valid
-  Owner name,
-  @NotNull @Valid
-  InternationalBankAccountNumber iban,
-  @NotNull @Valid
-  BankIdentifierCode bic) implements Payment {
-  public DirectBillingPayment {
-      requireNonNull(name);
-      requireNonNull(iban);
-      requireNonNull(bic);
-  }
+public record DirectBillingPayment(
+    @NotNull @Valid Owner name,
+    @NotNull @Valid InternationalBankAccountNumber iban,
+    @NotNull @Valid BankIdentifierCode bic) implements Payment {
+
+    public DirectBillingPayment {
+        requireNonNull(name);
+        requireNonNull(iban);
+        requireNonNull(bic);
+    }
 }

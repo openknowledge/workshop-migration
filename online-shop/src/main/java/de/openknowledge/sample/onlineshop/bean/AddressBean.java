@@ -39,7 +39,7 @@ public class AddressBean {
 
     @Inject
     private void loadAddresses(CustomerNumber number) {
-    	CustomerAggregate customer = repository.findCustomer(number).orElseThrow(NotFoundException::new);
+        CustomerAggregate customer = repository.findCustomer(number).orElseThrow(NotFoundException::new);
         defaultBillingAddress = customer.getDefaultBillingAddress().orElse(null);
         defaultDeliveryAddress = customer.getDefaultDeliveryAddress().orElse(null);
         addresses = customer.getAddresses();

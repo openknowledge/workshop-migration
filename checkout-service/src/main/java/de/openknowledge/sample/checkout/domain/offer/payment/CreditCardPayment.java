@@ -20,22 +20,18 @@ import static java.util.Objects.requireNonNull;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
-public record CreditCardPayment (
-  @NotNull @Valid
-  Owner name,
-  @NotNull @Valid
-  CreditCardNumber number,
-  @NotNull @Valid
-  Month expiryMonth,
-  @NotNull @Valid
-  Year expiryYear,
-  @NotNull @Valid
-  CardVerificationNumber cvn) implements Payment {
-  public CreditCardPayment {
-      requireNonNull(name);
-      requireNonNull(number);
-      requireNonNull(expiryMonth);
-      requireNonNull(expiryYear);
-      requireNonNull(cvn);
-  }
+public record CreditCardPayment(
+    @NotNull @Valid Owner name,
+    @NotNull @Valid CreditCardNumber number,
+    @NotNull @Valid Month expiryMonth,
+    @NotNull @Valid Year expiryYear,
+    @NotNull @Valid CardVerificationNumber cvn) implements Payment {
+
+    public CreditCardPayment {
+        requireNonNull(name);
+        requireNonNull(number);
+        requireNonNull(expiryMonth);
+        requireNonNull(expiryYear);
+        requireNonNull(cvn);
+    }
 }

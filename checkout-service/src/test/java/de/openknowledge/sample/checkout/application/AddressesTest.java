@@ -18,6 +18,7 @@ package de.openknowledge.sample.checkout.application;
 import static javax.ws.rs.client.ClientBuilder.newClient;
 import static javax.ws.rs.core.Response.Status.SEE_OTHER;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.flywaydb.core.Flyway.configure;
 
 import java.net.URI;
 
@@ -51,16 +52,13 @@ public class AddressesTest {
 
     @BeforeAll
     public static void configureDatabase() {
-        System.setProperty("jakarta.persistence.jdbc.url", postgresqlContainer.getJdbcUrl());
-        System.setProperty("jakarta.persistence.jdbc.user", postgresqlContainer.getUsername());
-        System.setProperty("jakarta.persistence.jdbc.password", postgresqlContainer.getPassword());
-        Flyway flyway = Flyway
-            .configure()
-            .dataSource(
-                postgresqlContainer.getJdbcUrl(),
-                postgresqlContainer.getUsername(),
-                postgresqlContainer.getPassword())
-            .cleanDisabled(false).load();
+        String jdbcUrl = postgresqlContainer.getJdbcUrl();
+        String username = postgresqlContainer.getUsername();
+        String password = postgresqlContainer.getPassword();
+        System.setProperty("jakarta.persistence.jdbc.url", jdbcUrl);
+        System.setProperty("jakarta.persistence.jdbc.user", username);
+        System.setProperty("jakarta.persistence.jdbc.password", password);
+        Flyway flyway = configure().dataSource(jdbcUrl, username, password).cleanDisabled(false).load();
         flyway.clean();
         flyway.migrate();
     }
@@ -80,7 +78,7 @@ public class AddressesTest {
                             }
                         ]
                     }
-                    """));
+            """));
         String paymentPath = response.getLocation().getPath();
         String offerPath = paymentPath.substring(0, paymentPath.lastIndexOf("/"));
         String offerNumber = offerPath.substring(offerPath.lastIndexOf("/"));
@@ -89,28 +87,22 @@ public class AddressesTest {
 
     @Test
     public void setBillingAddress() {
-        Response response = newClient().target(offerUri)
-            .path("billing-address")
-            .request()
-            .post(Entity.form(new Form()
-                    .param("street", "Poststr.")
-                    .param("houseNumber", "1")
-                    .param("zipCode", "26122")
-                    .param("city", "Oldenburg")));
-        
+        Response response = newClient().target(offerUri).path("billing-address").request().post(Entity.form(new Form()
+            .param("street", "Poststr.")
+            .param("houseNumber", "1")
+            .param("zipCode", "26122")
+            .param("city", "Oldenburg")));
+
         assertThat(response.getStatus()).isEqualTo(SEE_OTHER.getStatusCode());
     }
 
     @Test
     public void setInvalidBillingAddress() {
-        Response response = newClient().target(offerUri)
-            .path("billing-address")
-            .request()
-            .post(Entity.form(new Form()
-                    .param("street", "Poststr.")
-                    .param("houseNumber", "1")
-                    .param("city", "Oldenburg")));
-        
+        Response response = newClient().target(offerUri).path("billing-address").request().post(Entity.form(new Form()
+            .param("street", "Poststr.")
+            .param("houseNumber", "1")
+            .param("city", "Oldenburg")));
+
         assertThat(response.getStatus()).isEqualTo(Status.BAD_REQUEST.getStatusCode());
     }
 }

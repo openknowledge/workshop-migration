@@ -28,25 +28,25 @@ import de.openknowledge.sample.onlineshop.domain.customer.CustomerNumber;
 @RequestScoped
 public class CustomerBean {
 
-	private CustomerAggregate customer;
+    private CustomerAggregate customer;
 
-	public CustomerNumber getNumber() {
-		return customer.getCustomerNumber();
-	}
+    public CustomerNumber getNumber() {
+        return customer.getCustomerNumber();
+    }
 
-	public void setCustomer(CustomerAggregate customer) {
-		this.customer = customer;
-	}
+    public void setCustomer(CustomerAggregate customer) {
+        this.customer = customer;
+    }
 
-	public Address getDefaultBillingAddress() {
-		return customer.getDefaultBillingAddress().orElse(null);
-	}
+    public Address getDefaultBillingAddress() {
+        return customer.getDefaultBillingAddress().orElse(null);
+    }
 
-	public Address getDefaultDeliveryAddress() {
-		return customer.getDefaultDeliveryAddress().orElse(null);
-	}
+    public Address getDefaultDeliveryAddress() {
+        return customer.getDefaultDeliveryAddress().orElse(null);
+    }
 
-	public List<Address> getAddresses() {
-		return customer.getAddresses();
-	}
+    public List<Address> getAddresses() {
+        return customer.getAddresses();
+    }
 }

@@ -19,6 +19,7 @@ import static javax.ws.rs.client.ClientBuilder.newClient;
 import static javax.ws.rs.client.Entity.json;
 import static javax.ws.rs.core.MediaType.TEXT_HTML_TYPE;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.flywaydb.core.Flyway.configure;
 
 import java.io.IOException;
 import java.net.URI;
@@ -63,16 +64,13 @@ public class CustomerCareConsumerTest {
 
     @BeforeAll
     public static void configureDatabase() {
-        System.setProperty("jakarta.persistence.jdbc.url", postgresqlContainer.getJdbcUrl());
-        System.setProperty("jakarta.persistence.jdbc.user", postgresqlContainer.getUsername());
-        System.setProperty("jakarta.persistence.jdbc.password", postgresqlContainer.getPassword());
-        Flyway flyway = Flyway
-            .configure()
-            .dataSource(
-                postgresqlContainer.getJdbcUrl(),
-                postgresqlContainer.getUsername(),
-                postgresqlContainer.getPassword())
-            .cleanDisabled(false).load();
+        String jdbcUrl = postgresqlContainer.getJdbcUrl();
+        String username = postgresqlContainer.getUsername();
+        String password = postgresqlContainer.getPassword();
+        System.setProperty("jakarta.persistence.jdbc.url", jdbcUrl);
+        System.setProperty("jakarta.persistence.jdbc.user", username);
+        System.setProperty("jakarta.persistence.jdbc.password", password);
+        Flyway flyway = configure().dataSource(jdbcUrl, username, password).cleanDisabled(false).load();
         flyway.clean();
         flyway.migrate();
     }
@@ -93,7 +91,7 @@ public class CustomerCareConsumerTest {
                             }
                         ]
                     }
-                    """));
+            """));
         String paymentPath = response.getLocation().getPath();
         String offerPath = paymentPath.substring(0, paymentPath.lastIndexOf("/"));
         String offerNumber = offerPath.substring(offerPath.lastIndexOf("/"));
@@ -155,7 +153,7 @@ public class CustomerCareConsumerTest {
             .request()
             .accept(TEXT_HTML_TYPE)
             .get(String.class);
-        
+
         assertThat(billingAddressPage).contains("Poststr.");
     }
 }

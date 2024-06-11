@@ -35,6 +35,6 @@ public record Owner(@NotNull @Size(min = 2) String name) {
     }
 
     public static class Adapter extends AbstractRecordValueTypeAdapter<Owner, String> {
-        
+
     }
 }

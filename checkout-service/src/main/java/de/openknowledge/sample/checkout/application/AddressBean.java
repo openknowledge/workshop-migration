@@ -48,13 +48,13 @@ public class AddressBean {
     @Inject
     private void loadAddresses(CustomerNumber number) {
         WebTarget addressListTarget = newClient()
-                .target(url)
-                .path("customers/" + number.number() + "/addresses");
+            .target(url)
+            .path("customers/" + number.number() + "/addresses");
         WebTarget defaultBillingAddressTarget = addressListTarget.path("default-billing").register(RecordMessageBodyReader.class);
         WebTarget defaultDeliveryAddressTarget = addressListTarget.path("default-delivery").register(RecordMessageBodyReader.class);
         defaultBillingAddress = defaultBillingAddressTarget.request().get(Address.class);
         defaultDeliveryAddress = defaultDeliveryAddressTarget.request().get(Address.class);
-        addresses = addressListTarget.register(RecordListMessageBodyReader.class).request().get(new GenericType<List<Address>>() {});
+        addresses = addressListTarget.register(RecordListMessageBodyReader.class).request().get(new GenericType<List<Address>>() { });
     }
 
     public Address getDefaultBilling() {

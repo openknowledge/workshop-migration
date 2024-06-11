@@ -25,13 +25,12 @@ import de.openknowledge.sample.checkout.domain.order.Order;
 public class OrderBean {
 
     private Order order;
-    
+
     public Order getOrder() {
         return this.order;
     }
 
     public void setOrder(Order order) {
-        System.out.println(order);
         this.order = order;
     }
 }

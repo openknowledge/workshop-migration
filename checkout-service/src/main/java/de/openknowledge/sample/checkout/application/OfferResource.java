@@ -15,6 +15,7 @@
  */
 package de.openknowledge.sample.checkout.application;
 
+import static java.lang.String.format;
 import static javax.ws.rs.client.Entity.json;
 import static javax.ws.rs.core.Response.Status.Family.SUCCESSFUL;
 
@@ -86,7 +87,7 @@ public class OfferResource  {
     @Consumes({ "application/json" })
     public Response createOffer(@Valid @NotNull Offer offer) {
         OfferNumber number = offerService.createOffer(offer);
-        return Response.created(externalUrl.resolve("/offers/" + number.number() + "/payment")).build();
+        return Response.created(externalUrl.resolve(format("/offers/%s/payment", number.number()))).build();
     }
 
     @GET
@@ -101,26 +102,28 @@ public class OfferResource  {
     @Path("/{offerNumber}/credit-card-payment")
     @Consumes("application/x-www-form-urlencoded")
     public Response setCreditCardPayment(
-            @PathParam("offerNumber") @Valid OfferNumber number,
-            @FormParam("name") @NotNull @Valid Owner name,
-            @FormParam("number") @NotNull @Valid CreditCardNumber creditCardNumber,
-            @FormParam("expiryMonth") @NotNull @Valid Month expiryMonth,
-            @FormParam("expiryYear") @NotNull @Valid Year expiryYear,
-            @FormParam("cvn") @NotNull @Valid CardVerificationNumber cvn) {
+        @PathParam("offerNumber") @Valid OfferNumber number,
+        @FormParam("name") @NotNull @Valid Owner name,
+        @FormParam("number") @NotNull @Valid CreditCardNumber creditCardNumber,
+        @FormParam("expiryMonth") @NotNull @Valid Month expiryMonth,
+        @FormParam("expiryYear") @NotNull @Valid Year expiryYear,
+        @FormParam("cvn") @NotNull @Valid CardVerificationNumber cvn) {
+
         offerService.setPayment(number, new CreditCardPayment(name, creditCardNumber, expiryMonth, expiryYear, cvn));
-        return Response.seeOther(externalUrl.resolve("/offers/" + number.number() + "/billing-address")).build();
+        return Response.seeOther(getBillingAddressUri(number)).build();
     }
 
     @POST
     @Path("/{offerNumber}/direct-billing-payment")
     @Consumes("application/x-www-form-urlencoded")
     public Response setDirectBillingPayment(
-            @PathParam("offerNumber") @Valid OfferNumber number,
-            @FormParam("name") @NotNull @Valid Owner name,
-            @FormParam("iban") @NotNull @Valid InternationalBankAccountNumber iban,
-            @FormParam("bic") @NotNull @Valid BankIdentifierCode bic) {
+        @PathParam("offerNumber") @Valid OfferNumber number,
+        @FormParam("name") @NotNull @Valid Owner name,
+        @FormParam("iban") @NotNull @Valid InternationalBankAccountNumber iban,
+        @FormParam("bic") @NotNull @Valid BankIdentifierCode bic) {
+
         offerService.setPayment(number, new DirectBillingPayment(name, iban, bic));
-        return Response.seeOther(externalUrl.resolve("/offers/" + number.number() + "/billing-address")).build();
+        return Response.seeOther(getBillingAddressUri(number)).build();
     }
 
     @POST
@@ -128,7 +131,7 @@ public class OfferResource  {
     @Consumes("application/x-www-form-urlencoded")
     public Response setEmailPayment(@PathParam("offerNumber") @Valid OfferNumber number, @FormParam("email") Email email) {
         offerService.setPayment(number, new EmailPayment(email));
-        return Response.seeOther(externalUrl.resolve("/offers/" + number.number() + "/billing-address")).build();
+        return Response.seeOther(getBillingAddressUri(number)).build();
     }
 
     @GET
@@ -143,24 +146,29 @@ public class OfferResource  {
     @Path("/{offerNumber}/billing-address")
     @Consumes("application/x-www-form-urlencoded")
     public Response setBillingAddress(
-            @PathParam("offerNumber") @Valid OfferNumber number,
-            @Valid @NotNull Address address) {
+        @PathParam("offerNumber") @Valid OfferNumber number,
+        @Valid @NotNull Address address) {
+
         offerService.setBillingAddress(number, address);
-        return Response.seeOther(externalUrl.resolve("/offers/" + number.number() + "/delivery-address")).build();
+        return Response.seeOther(externalUrl.resolve(format("/offers/%s/delivery-address", number.number()))).build();
     }
 
     @POST
     @Path("/{offerNumber}/delivery-address")
     @Consumes("application/x-www-form-urlencoded")
     public Response setDeliveryAddress(
-            @PathParam("offerNumber") @Valid OfferNumber number,
-            @FormParam("sameAsBillingAddress") boolean sameAsBillingAddress,
-            @FormParam("street") @Valid Street street,
-            @FormParam("zipCode") @Valid ZipCode zipCode,
-            @FormParam("city") @Valid City city,
-            @FormParam("houseNumber") @Valid HouseNumber houseNumber) {
-        offerService.setDeliveryAddress(number, sameAsBillingAddress, sameAsBillingAddress ? null: new Address(street, houseNumber, zipCode, city));
-        return Response.seeOther(externalUrl.resolve("/offers/" + number.number() + "/summary")).build();
+        @PathParam("offerNumber") @Valid OfferNumber number,
+        @FormParam("sameAsBillingAddress") boolean sameAsBillingAddress,
+        @FormParam("street") @Valid Street street,
+        @FormParam("zipCode") @Valid ZipCode zipCode,
+        @FormParam("city") @Valid City city,
+        @FormParam("houseNumber") @Valid HouseNumber houseNumber) {
+
+        offerService.setDeliveryAddress(
+            number,
+            sameAsBillingAddress,
+            sameAsBillingAddress ? null : new Address(street, houseNumber, zipCode, city));
+        return Response.seeOther(externalUrl.resolve(format("/offers/%s/summary", number.number()))).build();
     }
 
     @GET
@@ -187,11 +195,10 @@ public class OfferResource  {
     public Response createOrder(@PathParam("offerNumber") @Valid OfferNumber number) {
         Order order = offerService.createOrder(number);
         Response orderResponse = ClientBuilder.newClient().target(onlineShopUrl).path("orders").request().post(json(order));
-        System.out.println(orderResponse.readEntity(String.class));
         if (orderResponse.getStatusInfo().getFamily() == SUCCESSFUL) {
-        	return Response.seeOther(externalUrl.resolve("/offers/" + number.number() + "/success")).build();
+            return Response.seeOther(externalUrl.resolve(format("/offers/%s/success", number.number()))).build();
         } else {
-        	return Response.seeOther(externalUrl.resolve("/offers/" + number.number() + "/error")).build();
+            return Response.seeOther(externalUrl.resolve(format("/offers/%s/error", number.number()))).build();
         }
     }
 
@@ -209,5 +216,9 @@ public class OfferResource  {
     public String showErrorPage(@PathParam("offerNumber") @Valid OfferNumber offerNumber) {
         offerBean.setNumber(offerNumber);
         return templateProcessor.apply("error");
+    }
+
+    private URI getBillingAddressUri(OfferNumber number) {
+        return externalUrl.resolve(format("/offers/%s/billing-address", number.number()));
     }
 }

@@ -35,6 +35,6 @@ public record CreditCardNumber(@NotNull @Pattern(regexp = "\\d{16}") String numb
     }
 
     public static class Adapter extends AbstractRecordValueTypeAdapter<CreditCardNumber, String> {
-        
+
     }
 }

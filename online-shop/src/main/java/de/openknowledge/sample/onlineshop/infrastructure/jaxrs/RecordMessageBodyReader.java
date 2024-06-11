@@ -60,13 +60,18 @@ public class RecordMessageBodyReader extends AbstractRecordConverter implements 
 
     @Override
     public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
-        return type.isRecord(); 
+        return type.isRecord();
     }
 
     @Override
-    public Record readFrom(Class<Record> type, Type genericType, Annotation[] annotations, MediaType mediaType,
-            MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
-            throws IOException, WebApplicationException {
+    public Record readFrom(
+        Class<Record> type,
+        Type genericType,
+        Annotation[] annotations,
+        MediaType mediaType,
+        MultivaluedMap<String, String> httpHeaders,
+        InputStream entityStream) throws IOException, WebApplicationException {
+
         MessageBodyReader<Map> jsonReader = providers.getMessageBodyReader(Map.class, Map.class, annotations, mediaType);
         Map<String, Object> value = jsonReader.readFrom(Map.class, Map.class, annotations, mediaType, httpHeaders, entityStream);
         Set<ConstraintViolation<?>> violations = null;

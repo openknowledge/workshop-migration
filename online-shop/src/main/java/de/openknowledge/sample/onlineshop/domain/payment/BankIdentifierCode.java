@@ -35,6 +35,6 @@ public record BankIdentifierCode(@NotNull @Pattern(regexp = "[A-Z0-9]{8,11}") St
     }
 
     public static class Adapter extends AbstractRecordValueTypeAdapter<BankIdentifierCode, String> {
-        
+
     }
 }

@@ -31,11 +31,12 @@ import de.openknowledge.sample.onlineshop.domain.payment.EmailPayment;
 import de.openknowledge.sample.onlineshop.domain.payment.Payment;
 
 public record OrderSummary(
-        @NotNull @Valid CustomerNumber customerNumber,
-        @NotNull @Valid List<Item> items,
-        @NotNull @Valid Payment payment,
-        @NotNull @Valid Address billingAddress,
-        @NotNull @Valid Address deliveryAddress) {
+    @NotNull @Valid CustomerNumber customerNumber,
+    @NotNull @Valid List<Item> items,
+    @NotNull @Valid Payment payment,
+    @NotNull @Valid Address billingAddress,
+    @NotNull @Valid Address deliveryAddress) {
+
     public OrderSummary {
         requireNonNull(customerNumber);
         requireNonNull(items);

@@ -35,6 +35,5 @@ public record Email(@NotNull @Pattern(regexp = ".+@\\w+\\.\\w+") String address)
     }
 
     public static class Adapter extends AbstractRecordValueTypeAdapter<Email, String> {
-        
     }
 }

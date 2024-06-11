@@ -40,7 +40,6 @@ public record Quantity(@NotNull @Min(1) Integer quantity) {
 
 
     public static class Adapter extends AbstractRecordValueTypeAdapter<Quantity, Integer> {
- 
-    }
 
+    }
 }

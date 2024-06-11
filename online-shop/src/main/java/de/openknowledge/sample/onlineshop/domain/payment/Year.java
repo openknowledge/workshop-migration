@@ -28,10 +28,13 @@ import jakarta.persistence.Embeddable;
 
 @Embeddable
 @JsonbTypeAdapter(Adapter.class)
-public record Year(@NotNull @Min(23) Integer year) {
+public record Year(@NotNull @Min(CURRENT_YEAR) Integer year) {
+
+    private static final int CURRENT_YEAR = 24;
+
     public Year {
         requireNonNull(year);
-        inclusiveBetween(2023, Integer.MAX_VALUE, year.intValue());
+        inclusiveBetween(CURRENT_YEAR, Integer.MAX_VALUE, year.intValue());
     }
 
     public Year(String expiryYear) {
@@ -39,6 +42,6 @@ public record Year(@NotNull @Min(23) Integer year) {
     }
 
     public static class Adapter extends AbstractRecordValueTypeAdapter<Year, Integer> {
-        
+
     }
 }

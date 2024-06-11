@@ -23,7 +23,7 @@ import javax.json.bind.adapter.JsonbAdapter;
 import de.openknowledge.sample.onlineshop.infrastructure.common.ObjectBuilder;
 
 public class AbstractRecordValueTypeAdapter<R extends Record, P> implements JsonbAdapter<R, P> {
-    
+
     private ObjectBuilder<R> valueObjectBuilder;
     private Method accessor;
 
@@ -31,7 +31,8 @@ public class AbstractRecordValueTypeAdapter<R extends Record, P> implements Json
         valueObjectBuilder = ObjectBuilder.<R>fromGenericType(getClass(), AbstractRecordValueTypeAdapter.class, 0);
         RecordComponent[] recordComponents = valueObjectBuilder.getType().getRecordComponents();
         if (recordComponents.length > 1) {
-            throw new IllegalStateException("Unsupported record type " + valueObjectBuilder.getType() + ". Only records with one component are supported");
+            throw new IllegalStateException(
+                "Unsupported record type " + valueObjectBuilder.getType() + ". Only records with one component are supported");
         }
         RecordComponent component = recordComponents[0];
         accessor = component.getAccessor();

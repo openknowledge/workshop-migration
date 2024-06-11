@@ -25,6 +25,7 @@ import javax.validation.constraints.Pattern;
 
 public record OrderNumber(@NotNull @Pattern(regexp = "\\d+") String number) {
 
+    private static final int MAX_ORDER_NUMBER = 10000;
     private static final Random RANDOM = new Random();
 
     public OrderNumber {
@@ -33,6 +34,6 @@ public record OrderNumber(@NotNull @Pattern(regexp = "\\d+") String number) {
     }
 
     public OrderNumber() {
-        this(Integer.toString(RANDOM.nextInt(10000)));
+        this(Integer.toString(RANDOM.nextInt(MAX_ORDER_NUMBER)));
     }
 }

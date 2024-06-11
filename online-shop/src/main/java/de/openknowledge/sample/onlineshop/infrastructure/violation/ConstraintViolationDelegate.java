@@ -75,13 +75,13 @@ public class ConstraintViolationDelegate<T> implements ConstraintViolation<T> {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder();
-        sb.append( "ConstraintViolationImpl" );
-        sb.append( "{message='" ).append( getMessage() ).append( '\'' );
-        sb.append( ", propertyPath=" ).append( getPropertyPath() );
-        sb.append( ", rootBeanClass=" ).append( getRootBeanClass() );
-        sb.append( ", messageTemplate='" ).append( getMessageTemplate() ).append( '\'' );
-        sb.append( '}' );
+        StringBuilder sb = new StringBuilder();
+        sb.append("ConstraintViolationDelegate");
+        sb.append("{message='").append(getMessage()).append('\'');
+        sb.append(", propertyPath=").append(getPropertyPath());
+        sb.append(", rootBeanClass=").append(getRootBeanClass());
+        sb.append(", messageTemplate='").append(getMessageTemplate()).append('\'');
+        sb.append('}');
         return sb.toString();
     }
 }

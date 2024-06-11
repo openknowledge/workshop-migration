@@ -35,16 +35,20 @@ import jakarta.persistence.Persistence;
 @ApplicationScoped
 public class EntityManagerProvider {
 
+    private static final String JDBC_URL_PROPERTY = "jakarta.persistence.jdbc.url";
+    private static final String JDBC_USER_PROPERTY = "jakarta.persistence.jdbc.user";
+    private static final String JDBC_PASSWORD_PROPERTY = "jakarta.persistence.jdbc.password";
+
     @Produces
     @ApplicationScoped
     public EntityManagerFactory createEntityManagerFactory() {
         Map<String, String> properties = new HashMap<>();
-        Consumer<String> setUrl = url -> properties.put("jakarta.persistence.jdbc.url", url);
-        Consumer<String> setUser = user -> properties.put("jakarta.persistence.jdbc.user", user);
-        Consumer<String> setPassword = password -> properties.put("jakarta.persistence.jdbc.password", password);
-        ofNullable(getProperty("jakarta.persistence.jdbc.url")).ifPresent(setUrl);
-        ofNullable(getProperty("jakarta.persistence.jdbc.user")).ifPresent(setUser);
-        ofNullable(getProperty("jakarta.persistence.jdbc.password")).ifPresent(setPassword);
+        Consumer<String> setUrl = url -> properties.put(JDBC_URL_PROPERTY, url);
+        Consumer<String> setUser = user -> properties.put(JDBC_USER_PROPERTY, user);
+        Consumer<String> setPassword = password -> properties.put(JDBC_PASSWORD_PROPERTY, password);
+        ofNullable(getProperty(JDBC_URL_PROPERTY)).ifPresent(setUrl);
+        ofNullable(getProperty(JDBC_USER_PROPERTY)).ifPresent(setUser);
+        ofNullable(getProperty(JDBC_PASSWORD_PROPERTY)).ifPresent(setPassword);
         ofNullable(getenv("JAKARTA_PERSISTENCE_JDBC_URL")).ifPresent(setUrl);
         ofNullable(getenv("JAKARTA_PERSISTENCE_JDBC_USER")).ifPresent(setUser);
         ofNullable(getenv("JAKARTA_PERSISTENCE_JDBC_PASSWORD")).ifPresent(setPassword);

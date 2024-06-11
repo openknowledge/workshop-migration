@@ -33,7 +33,7 @@ import javax.validation.Validator;
 import de.openknowledge.sample.onlineshop.infrastructure.jsonb.JsonbSubclass;
 
 public abstract class AbstractRecordConverter {
-    
+
     protected Object instantiate(Type type, Object value, Set<ConstraintViolation<?>> violations) {
         if (value instanceof Map) {
             return instantiate((Class<?>)type, ((Map<String, Object>)value)::get, violations);
@@ -71,7 +71,7 @@ public abstract class AbstractRecordConverter {
                 }
             }
         }
-    	RecordComponent[] recordComponents = type.getRecordComponents();
+        RecordComponent[] recordComponents = type.getRecordComponents();
         Class<?>[] parameterTypes = new Class[recordComponents.length];
         Object[] parameters = new Object[recordComponents.length];
         for (int i = 0; i < recordComponents.length; i++) {

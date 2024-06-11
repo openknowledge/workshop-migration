@@ -38,7 +38,6 @@ import de.openknowledge.sample.onlineshop.domain.customer.CustomerAggregate;
 import de.openknowledge.sample.onlineshop.domain.customer.CustomerNumber;
 import de.openknowledge.sample.onlineshop.domain.order.OrderAggregate;
 import de.openknowledge.sample.onlineshop.domain.order.OrderStatus;
-import de.openknowledge.sample.onlineshop.infrastructure.jpa.Transactional;
 import de.openknowledge.sample.onlineshop.repository.CustomerRepository;
 import de.openknowledge.sample.onlineshop.repository.OrderRepository;
 
@@ -54,17 +53,18 @@ public class ShoppingCartResource {
     private OrderRepository orderRepository;
     @Inject
     private CustomerRepository customerRepository;
-    
+
     @GET
     @Produces(MediaType.TEXT_HTML)
     public Response getShoppingCart(@PathParam("customerNumber") CustomerNumber number) throws IOException {
-    	CustomerAggregate customer = customerRepository.findCustomer(number).orElseThrow(NotFoundException::new);
+        CustomerAggregate customer = customerRepository.findCustomer(number).orElseThrow(NotFoundException::new);
         OrderAggregate aggregate = new OrderAggregate(customer, OrderStatus.SHOPPING_CART);
         orderRepository.persist(aggregate);
 
         try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream("META-INF/resources/shopping-cart.html");
-                BufferedReader buffer = new BufferedReader(new InputStreamReader(inputStream));
-                StringWriter content = new StringWriter()) {
+            BufferedReader buffer = new BufferedReader(new InputStreamReader(inputStream));
+            StringWriter content = new StringWriter()) {
+
             buffer.lines().forEach(content::write);
             return Response.ok(content.toString()).type(MediaType.TEXT_HTML_TYPE).build();
         }

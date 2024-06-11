@@ -27,13 +27,13 @@ import jakarta.persistence.EntityManager;
 @ApplicationScoped
 public class CustomerRepository {
 
-	@Inject
-	private EntityManager entityManager;
+    @Inject
+    private EntityManager entityManager;
 
-	public Optional<CustomerAggregate> findCustomer(CustomerNumber customerNumber) {
+    public Optional<CustomerAggregate> findCustomer(CustomerNumber customerNumber) {
         return entityManager.createNamedQuery(CustomerAggregate.FIND_BY_CUSTOMER_NUMBER, CustomerAggregate.class)
             .setParameter("number", customerNumber.number())
             .getResultStream()
             .findAny();
-	}
+    }
 }

@@ -37,15 +37,15 @@ public class OrderRepository {
         entityManager.persist(aggregate);
     }
 
-	public OrderAggregate findByCustomer(@NotNull @Valid CustomerNumber customerNumber) {
+    public OrderAggregate findByCustomer(@NotNull @Valid CustomerNumber customerNumber) {
         return entityManager.createNamedQuery(OrderAggregate.FIND_BY_CUSTOMER_NUMBER, OrderAggregate.class)
-                .setParameter("number", customerNumber.number())
+                .setParameter("customerNumber", customerNumber.number())
                 .getSingleResult();
-	}
+    }
 
     public OrderAggregate findByOrderNumber(OrderNumber number) {
         return entityManager.createNamedQuery(OrderAggregate.FIND_BY_ORDER_NUMBER, OrderAggregate.class)
-                .setParameter("number", number.number())
+                .setParameter("orderNumber", number.number())
                 .getSingleResult();
     }
 }

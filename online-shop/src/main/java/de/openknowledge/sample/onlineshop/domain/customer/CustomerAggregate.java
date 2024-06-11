@@ -82,46 +82,46 @@ public class CustomerAggregate {
         return customerNumber;
     }
 
-	public Optional<Address> getDefaultBillingAddress() {
-		return ofNullable(defaultBillingAddress).map(AddressEntity::getAddress);
-	}
-
-    public void setDefaultBillingAddress(Address address) {
-    	addAddress(address);
-    	this.defaultBillingAddress = getAddress(address).orElseThrow(UnsupportedOperationException::new);
+    public Optional<Address> getDefaultBillingAddress() {
+        return ofNullable(defaultBillingAddress).map(AddressEntity::getAddress);
     }
 
-	public Optional<Address> getDefaultDeliveryAddress() {
-		return ofNullable(defaultDeliveryAddress).map(AddressEntity::getAddress);
-	}
+    public void setDefaultBillingAddress(Address address) {
+        addAddress(address);
+        this.defaultBillingAddress = getAddress(address).orElseThrow(UnsupportedOperationException::new);
+    }
+
+    public Optional<Address> getDefaultDeliveryAddress() {
+        return ofNullable(defaultDeliveryAddress).map(AddressEntity::getAddress);
+    }
 
     public void setDefaultDeliveryAddress(Address address) {
-    	addAddress(address);
-    	this.defaultDeliveryAddress = getAddress(address).orElseThrow(UnsupportedOperationException::new);
+        addAddress(address);
+        this.defaultDeliveryAddress = getAddress(address).orElseThrow(UnsupportedOperationException::new);
     }
 
     public void addAddress(Address address) {
-    	if (addresses == null) {
-    		addresses = new LinkedHashSet<AddressEntity>();
-    		addresses.add(new AddressEntity(this, address));
-    	} else if (getAddress(address).isEmpty()) {
-    		addresses.add(new AddressEntity(this, address));
-    	}
+        if (addresses == null) {
+            addresses = new LinkedHashSet<AddressEntity>();
+            addresses.add(new AddressEntity(this, address));
+        } else if (getAddress(address).isEmpty()) {
+            addresses.add(new AddressEntity(this, address));
+        }
     }
 
     public Optional<AddressEntity> getAddress(Address address) {
-    	if (addresses == null) {
-    		return Optional.empty();
-    	}
-    	return this.addresses.stream()
-    	    .filter(entity -> entity.getAddress().equals(address))
-    	    .findAny();
+        if (addresses == null) {
+            return Optional.empty();
+        }
+        return this.addresses.stream()
+            .filter(entity -> entity.getAddress().equals(address))
+            .findAny();
     }
 
-	public List<Address> getAddresses() {
-		if (addresses == null) {
-			return emptyList();
-		}
-		return addresses.stream().map(AddressEntity::getAddress).toList();
-	}
+    public List<Address> getAddresses() {
+        if (addresses == null) {
+            return emptyList();
+        }
+        return addresses.stream().map(AddressEntity::getAddress).toList();
+    }
 }

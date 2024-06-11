@@ -45,8 +45,8 @@ public class OrderResource  {
     private URI url;
     @Inject
     private Function<String, String> templateProcessor;
-	@Inject
-	private OrderService orderService;
+    @Inject
+    private OrderService orderService;
 
     @POST
     @Consumes("application/x-www-form-urlencoded")

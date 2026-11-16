@@ -2,4 +2,5 @@
 !.github/
 !.devcontainer/
 !.gitignore
+!.opencode/
 /target/

@@ -1,0 +1,15 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "servers": {
+      "miro": {
+        "type": "remote",
+        "url": "https://mcp.miro.com/"
+      }
+    }
+  },
+  "permissions": [
+    { "action": "miro_board_share", "resource": "*", "effect": "deny" },
+    { "action": "miro_space_share", "resource": "*", "effect": "deny" }
+  ]
+}
